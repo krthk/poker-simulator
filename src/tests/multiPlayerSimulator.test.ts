@@ -222,24 +222,30 @@ describe('Multi-Player Simulator Tests', () => {
     });
 
     test('Large number of players (6+ players)', () => {
+      // Give each player different premium hands to avoid conflicts
+      const hands = ['AA', 'KK', 'QQ', 'JJ', 'TT', '99'];
       const players: Player[] = Array.from({ length: 6 }, (_, i) => 
-        createPlayer(`player${i}`, `Player ${i}`, 'BTN', ['AA'], i === 0)
+        createPlayer(`player${i}`, `Player ${i}`, 'BTN', [hands[i]], i === 0)
       );
 
       const config: SimulationConfig = {
         players,
-        iterations: 2000
+        iterations: 5000
       };
 
       const result = runSimulation(config);
       
       expect(result.players).toHaveLength(6);
       
-      // All players have AA, so equity should be roughly equal (1/6 ≈ 16.7%)
-      result.players.forEach(player => {
-        expect(player.equity).toBeGreaterThan(10);
-        expect(player.equity).toBeLessThan(25);
-      });
+      // With different premium hands, AA should have highest equity
+      const aaPlayer = result.players.find(p => p.name === 'Player 0');
+      expect(aaPlayer).toBeDefined();
+      expect(aaPlayer!.equity).toBeGreaterThan(15); // AA should win more than 16.7% (1/6)
+      
+      // Total equity should be close to 100%
+      const totalEquity = result.players.reduce((sum, p) => sum + p.equity, 0);
+      expect(totalEquity).toBeGreaterThan(95);
+      expect(totalEquity).toBeLessThan(105);
     });
   });
 
