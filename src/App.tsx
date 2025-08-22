@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import { useState, useEffect } from 'react';
 import { Player, SimulationResult, Board, TablePosition } from './types/poker';
 import { runSimulation } from './poker/simulator';
 import { getTopPercentHands, PRESET_PERCENTAGES } from './poker/handStrength';
@@ -37,17 +37,18 @@ function App() {
     }
   };
   
-  // Helper function to ensure all players have default ranges
+  // Helper function to ensure all players have default ranges (only for newly created players)
   const ensureDefaultRanges = (playerList: Player[]): Player[] => {
     return playerList.map(player => ({
       ...player,
-      range: player.range.length > 0 ? player.range : getDefaultRange(player.position)
+      // Don't override empty ranges - users may have intentionally cleared them
+      range: player.range
     }));
   };
   const [players, setPlayers] = useState<Player[]>([]);
   const [selectedPlayer, setSelectedPlayer] = useState<Player | null>(null);
   const [board, setBoard] = useState<Board>([]);
-  const [iterations, setIterations] = useState<number>(10000);
+  const [iterations] = useState<number>(10000);
   const [isSimulating, setIsSimulating] = useState<boolean>(false);
   const [showHelp, setShowHelp] = useState<boolean>(false);
   const [results, setResults] = useState<SimulationResult | null>(null);
@@ -105,14 +106,12 @@ function App() {
                 }
                 break;
               case 'ranges':
-                const playersWithRanges = players.filter(p => p.isActive && p.range.length > 0);
-                if (playersWithRanges.length >= 2) {
+                if (canProceedToBoard()) {
                   setCurrentStep('board');
                 }
                 break;
               case 'board':
-                const activePlayers = players.filter(p => p.isActive && p.range.length > 0);
-                if (activePlayers.length >= 2) {
+                if (canProceedToBoard()) {
                   handleRunSimulation();
                 }
                 break;
@@ -186,8 +185,12 @@ function App() {
   };
 
   const canProceedToBoard = () => {
-    const playersWithRanges = players.filter(p => p.isActive && p.range.length > 0);
-    return playersWithRanges.length >= 2;
+    // All active players must have ranges (no empty ranges allowed)
+    const activePlayers = players.filter(p => p.isActive);
+    const playersWithRanges = activePlayers.filter(p => p.range.length > 0);
+    
+    // Must have at least 2 players AND all active players must have ranges
+    return playersWithRanges.length >= 2 && playersWithRanges.length === activePlayers.length;
   };
 
   const resetToPlayers = () => {
@@ -469,22 +472,38 @@ function App() {
                   {players.map((player) => (
                     <div
                       key={player.id}
-                      className={`px-2 py-1 rounded border-2 cursor-pointer transition-all duration-200 flex items-center space-x-1 ${
+                      className={`px-3 py-2 rounded-lg cursor-pointer transition-all duration-200 flex items-center space-x-2 shadow-lg ${
                         selectedPlayer?.id === player.id
-                          ? 'border-purple-400 bg-purple-400/20'
+                          ? 'bg-gradient-to-r from-purple-600 to-purple-700 border-2 border-purple-300 text-white shadow-purple-500/30 scale-105'
                           : player.range.length > 0
-                            ? 'border-green-400 bg-green-400/20 hover:bg-green-400/30'
-                            : 'border-slate-600 bg-slate-600/20 hover:bg-slate-600/30'
+                            ? 'bg-gradient-to-r from-green-600/80 to-green-700/80 border-2 border-green-400/50 text-white hover:from-green-500/90 hover:to-green-600/90 hover:border-green-300/60 hover:scale-102'
+                            : 'bg-gradient-to-r from-slate-600/60 to-slate-700/60 border-2 border-slate-500/50 text-slate-300 hover:from-slate-500/70 hover:to-slate-600/70 hover:border-slate-400/60 hover:scale-102'
                       }`}
                       onClick={() => setSelectedPlayer(player)}
                     >
-                      <div className={`text-xs font-semibold ${player.isHero ? 'text-purple-400' : 'text-white'}`}>
+                      <div className={`text-xs font-semibold ${
+                        selectedPlayer?.id === player.id 
+                          ? (player.isHero ? 'text-yellow-300' : 'text-white')
+                          : player.isHero 
+                            ? 'text-yellow-400' 
+                            : 'text-white'
+                      }`}>
                         {player.name} {player.isHero && '👑'}
                       </div>
-                      <div className="text-xs text-slate-400">
+                      <div className={`text-xs ${
+                        selectedPlayer?.id === player.id 
+                          ? 'text-purple-200' 
+                          : 'text-slate-300'
+                      }`}>
                         {player.position}
                       </div>
-                      <div className={`text-xs font-bold ${player.range.length > 0 ? 'text-green-400' : 'text-slate-400'}`}>
+                      <div className={`text-xs font-bold ${
+                        selectedPlayer?.id === player.id 
+                          ? 'text-white'
+                          : player.range.length > 0 
+                            ? 'text-green-300' 
+                            : 'text-slate-400'
+                      }`}>
                         {player.range.length}
                       </div>
                     </div>
