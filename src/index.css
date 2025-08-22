@@ -1,0 +1,37 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+body {
+  font-family: 'Georgia', serif;
+  background: linear-gradient(135deg, #282a36 0%, #44475a 100%);
+  min-height: 100vh;
+  margin: 0;
+}
+
+#root {
+  min-height: 100vh;
+}
+
+/* Custom poker table styling */
+.poker-card {
+  @apply bg-card-white border border-gray-300 rounded-lg shadow-sm;
+  @apply transition-all duration-200 hover:shadow-md;
+}
+
+.poker-card.selected {
+  @apply bg-poker-gold border-poker-gold shadow-lg transform scale-105;
+}
+
+.poker-button {
+  @apply bg-slate-700 hover:bg-slate-600 text-white font-semibold py-2 px-4 rounded-lg;
+  @apply transition-all duration-200 hover:shadow-lg active:transform active:scale-95;
+}
+
+.poker-button.primary {
+  @apply bg-purple-600 hover:bg-purple-500 text-white;
+}
+
+.poker-button.danger {
+  @apply bg-pink-600 hover:bg-pink-500;
+}
