@@ -1,10 +1,21 @@
-import React from 'react';
+import React, { useEffect } from 'react';
 
 interface HelpPageProps {
   onClose: () => void;
 }
 
 const HelpPage: React.FC<HelpPageProps> = ({ onClose }) => {
+  // Handle Escape key to close help page
+  useEffect(() => {
+    const handleKeyDown = (event: KeyboardEvent) => {
+      if (event.key === 'Escape') {
+        onClose();
+      }
+    };
+
+    document.addEventListener('keydown', handleKeyDown);
+    return () => document.removeEventListener('keydown', handleKeyDown);
+  }, [onClose]);
   return (
     <div className="fixed inset-0 bg-black/50 backdrop-blur-sm z-50 flex items-center justify-center p-4">
       <div className="bg-gradient-to-br from-slate-800/95 to-slate-900/95 backdrop-blur-lg rounded-3xl border border-slate-600/50 shadow-2xl max-w-4xl w-full max-h-[90vh] overflow-auto">
@@ -76,14 +87,15 @@ const HelpPage: React.FC<HelpPageProps> = ({ onClose }) => {
                   Select Players
                 </h3>
                 <div className="space-y-3">
-                  <p className="text-slate-300">Choose yourself (Hero) and opponents (Villains) from the poker table.</p>
+                  <p className="text-slate-300">Choose table format and add players by clicking seat positions around the poker table.</p>
                   <div className="bg-slate-800/50 rounded-lg p-4">
                     <h4 className="text-yellow-400 font-semibold mb-2">How to use:</h4>
                     <ul className="text-slate-300 text-sm space-y-1 ml-4">
+                      <li>• <strong>Select table format:</strong> 6-max, 9-max, or full-ring (10 seats)</li>
                       <li>• <strong>Click seat positions</strong> to add/remove players</li>
-                      <li>• <strong>Right-click any player</strong> to set them as Hero (yourself)</li>
+                      <li>• <strong>First player is Hero</strong> (marked with crown 👑)</li>
                       <li>• <strong>Minimum 2 players</strong> required for simulation</li>
-                      <li>• <strong>Position matters</strong> - UTG, Button, Blinds affect strategy</li>
+                      <li>• <strong>Position matters</strong> - UTG, Button, Blinds affect default ranges</li>
                     </ul>
                   </div>
                 </div>
@@ -101,10 +113,11 @@ const HelpPage: React.FC<HelpPageProps> = ({ onClose }) => {
                     <div className="bg-slate-800/50 rounded-lg p-4">
                       <h4 className="text-purple-400 font-semibold mb-2">Selection Methods:</h4>
                       <ul className="text-slate-300 text-sm space-y-1">
-                        <li>• <strong>Click individual hands</strong> in the grid</li>
-                        <li>• <strong>Drag to select</strong> multiple hands</li>
-                        <li>• <strong>Use preset buttons</strong> (Premium, Tight, etc.)</li>
-                        <li>• <strong>Percentage slider</strong> for top X% of hands</li>
+                        <li>• <strong>Click individual hands</strong> in the 13x13 matrix</li>
+                        <li>• <strong>Drag to select/deselect</strong> multiple hands at once</li>
+                        <li>• <strong>Preset buttons:</strong> Premium, Ultra-tight, Tight, Medium, Loose, Any Two</li>
+                        <li>• <strong>Percentage slider</strong> for top X% of hands (0-100%)</li>
+                        <li>• <strong>Clear button</strong> to remove all selected hands</li>
                       </ul>
                     </div>
                     <div className="bg-slate-800/50 rounded-lg p-4">
@@ -131,11 +144,12 @@ const HelpPage: React.FC<HelpPageProps> = ({ onClose }) => {
                   <div className="bg-slate-800/50 rounded-lg p-4">
                     <h4 className="text-cyan-400 font-semibold mb-2">Board Options:</h4>
                     <ul className="text-slate-300 text-sm space-y-1 ml-4">
-                      <li>• <strong>Pre-flop:</strong> No community cards (fastest simulation)</li>
-                      <li>• <strong>Flop:</strong> Set 3 cards by clicking "FLOP" section</li>
+                      <li>• <strong>Pre-flop:</strong> Leave cards empty for fastest simulation</li>
+                      <li>• <strong>Flop:</strong> Click card selector to choose 3 community cards</li>
                       <li>• <strong>Turn:</strong> Add 4th card after setting flop</li>
-                      <li>• <strong>River:</strong> Add 5th card for complete board</li>
-                      <li>• <strong>Quick presets:</strong> Dry boards, draw-heavy, paired</li>
+                      <li>• <strong>River:</strong> Add 5th card for complete board analysis</li>
+                      <li>• <strong>Clear board:</strong> Remove all cards to return to pre-flop</li>
+                      <li>• <strong>Real-time updates:</strong> Equity changes as you add/remove cards</li>
                     </ul>
                   </div>
                 </div>
@@ -152,10 +166,12 @@ const HelpPage: React.FC<HelpPageProps> = ({ onClose }) => {
                   <div className="bg-slate-800/50 rounded-lg p-4">
                     <h4 className="text-pink-400 font-semibold mb-2">Results Include:</h4>
                     <ul className="text-slate-300 text-sm space-y-1 ml-4">
-                      <li>• <strong>Equity %:</strong> Probability of winning at showdown</li>
-                      <li>• <strong>Win/Tie counts:</strong> Detailed breakdown of outcomes</li>
-                      <li>• <strong>Player ranking:</strong> Sorted by equity strength</li>
-                      <li>• <strong>Simulation stats:</strong> Number of hands analyzed</li>
+                      <li>• <strong>Equity %:</strong> Win probability for each player (sorted by rank)</li>
+                      <li>• <strong>Win/Tie/Loss counts:</strong> Detailed outcome breakdown</li>
+                      <li>• <strong>Player ranking:</strong> #1 winner with crown, Hero highlighted</li>
+                      <li>• <strong>Equity distribution:</strong> Visual progress bars and percentages</li>
+                      <li>• <strong>Key statistics:</strong> Winner margin, Hero rank, valid hands simulated</li>
+                      <li>• <strong>Action buttons:</strong> Run Again or start New Analysis</li>
                     </ul>
                   </div>
                 </div>
@@ -175,16 +191,24 @@ const HelpPage: React.FC<HelpPageProps> = ({ onClose }) => {
                   <h4 className="text-green-400 font-semibold mb-3">Common Ranges:</h4>
                   <div className="space-y-2 text-sm">
                     <div className="bg-slate-800/50 rounded p-3">
-                      <strong className="text-yellow-400">Ultra-tight (2%):</strong>
-                      <div className="text-slate-300 mt-1">AA, KK, QQ, AKs only</div>
+                      <strong className="text-red-400">Premium (2.1%):</strong>
+                      <div className="text-slate-300 mt-1">AA, KK, QQ, AKs, AKo</div>
                     </div>
                     <div className="bg-slate-800/50 rounded p-3">
-                      <strong className="text-orange-400">Tight (15%):</strong>
-                      <div className="text-slate-300 mt-1">Premium pairs, strong aces, broadways</div>
+                      <strong className="text-orange-400">Ultra-tight (4.5%):</strong>
+                      <div className="text-slate-300 mt-1">Premium + JJ, AQs, AQo</div>
                     </div>
                     <div className="bg-slate-800/50 rounded p-3">
-                      <strong className="text-blue-400">Loose (50%):</strong>
-                      <div className="text-slate-300 mt-1">Any ace, pairs, suited kings, connectors</div>
+                      <strong className="text-yellow-400">Tight (13.1%):</strong>
+                      <div className="text-slate-300 mt-1">Strong pairs, premium aces, suited broadways</div>
+                    </div>
+                    <div className="bg-slate-800/50 rounded p-3">
+                      <strong className="text-blue-400">Medium (25.6%):</strong>
+                      <div className="text-slate-300 mt-1">Pairs 77+, suited aces, most broadways</div>
+                    </div>
+                    <div className="bg-slate-800/50 rounded p-3">
+                      <strong className="text-green-400">Loose (46.3%):</strong>
+                      <div className="text-slate-300 mt-1">Any pair, ace, suited king, connectors</div>
                     </div>
                   </div>
                 </div>
@@ -250,10 +274,18 @@ const HelpPage: React.FC<HelpPageProps> = ({ onClose }) => {
               </div>
 
               <div className="bg-slate-700/30 rounded-xl p-4">
+                <h4 className="text-yellow-400 font-semibold mb-2">Q: What happens if I clear a player's range?</h4>
+                <p className="text-slate-300 text-sm">
+                  The app prevents progression to Step 3 (Board Setup) if any active player has an empty range. 
+                  All players must have at least one hand selected to run the simulation. This ensures valid equity calculations.
+                </p>
+              </div>
+
+              <div className="bg-slate-700/30 rounded-xl p-4">
                 <h4 className="text-yellow-400 font-semibold mb-2">Q: Can I save or export results?</h4>
                 <p className="text-slate-300 text-sm">
                   Currently, results are displayed in the browser. You can take screenshots or manually record key statistics. 
-                  Future versions may include export functionality.
+                  The "Run Again" button lets you re-simulate with the same settings for consistency checks.
                 </p>
               </div>
 

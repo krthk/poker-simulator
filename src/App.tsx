@@ -1,7 +1,6 @@
 import { useState, useEffect } from 'react';
-import { Player, SimulationResult, Board, TablePosition } from './types/poker';
+import { Player, SimulationResult, Board } from './types/poker';
 import { runSimulation } from './poker/simulator';
-import { getTopPercentHands, PRESET_PERCENTAGES } from './poker/handStrength';
 import TableSelector from './components/TableSelector';
 import HandRangeSelector from './components/HandRangeSelector';
 import ResultsDisplay from './components/ResultsDisplay';
@@ -13,29 +12,6 @@ type Step = 'players' | 'ranges' | 'board' | 'results';
 function App() {
   const [currentStep, setCurrentStep] = useState<Step>('players');
   
-  // Helper function to assign default ranges based on position
-  const getDefaultRange = (position: TablePosition): string[] => {
-    switch (position) {
-      case 'UTG':
-      case 'UTG+1':
-        return getTopPercentHands(PRESET_PERCENTAGES.TIGHT); // Tight for early position
-      case 'MP1':
-      case 'MP2':
-      case 'MP3':
-        return getTopPercentHands(PRESET_PERCENTAGES.MEDIUM); // Medium for middle position
-      case 'HJ':
-      case 'CO':
-        return getTopPercentHands(PRESET_PERCENTAGES.MEDIUM_LOOSE); // Looser for late position
-      case 'BTN':
-        return getTopPercentHands(PRESET_PERCENTAGES.LOOSE); // Loose for button
-      case 'SB':
-        return getTopPercentHands(PRESET_PERCENTAGES.MEDIUM_TIGHT); // Tighter for small blind
-      case 'BB':
-        return getTopPercentHands(PRESET_PERCENTAGES.MEDIUM_LOOSE); // Defending range for big blind
-      default:
-        return getTopPercentHands(PRESET_PERCENTAGES.MEDIUM);
-    }
-  };
   
   // Helper function to ensure all players have default ranges (only for newly created players)
   const ensureDefaultRanges = (playerList: Player[]): Player[] => {
@@ -658,10 +634,6 @@ function App() {
           )}
         </div>
 
-        {/* Footer */}
-        <div className="mt-1 text-center text-white/50 text-xs flex-shrink-0">
-          <p>Vibe coded by Karthik Puthraya © 2025</p>
-        </div>
       </div>
 
       {/* Help Page Modal */}

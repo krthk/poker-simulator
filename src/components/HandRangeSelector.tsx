@@ -121,47 +121,6 @@ const HandRangeSelector: React.FC<HandRangeSelectorProps> = ({
     onRangeChange([]);
   };
 
-  // Generate all possible hands for "Any Two" range
-  const generateAllHands = (): HandRange => {
-    const allHands: HandRange = [];
-    
-    // Add all pocket pairs
-    for (const rank of DISPLAY_RANKS) {
-      allHands.push(`${rank}${rank}`);
-    }
-    
-    // Add all suited and offsuit combinations
-    for (let i = 0; i < DISPLAY_RANKS.length; i++) {
-      for (let j = i + 1; j < DISPLAY_RANKS.length; j++) {
-        const rank1 = DISPLAY_RANKS[i];
-        const rank2 = DISPLAY_RANKS[j];
-        allHands.push(`${rank1}${rank2}s`); // Suited
-        allHands.push(`${rank1}${rank2}o`); // Offsuit
-      }
-    }
-    
-    return allHands;
-  };
-
-  const setPresetRange = (preset: 'tight' | 'loose' | 'any-two') => {
-    let presetRange: HandRange = [];
-    
-    switch (preset) {
-      case 'tight':
-        presetRange = getTopPercentHands(PRESET_PERCENTAGES.TIGHT);
-        break;
-        
-      case 'loose':
-        presetRange = getTopPercentHands(PRESET_PERCENTAGES.LOOSE);
-        break;
-        
-      case 'any-two':
-        presetRange = getTopPercentHands(100);
-        break;
-    }
-    
-    onRangeChange(presetRange);
-  };
 
   const setPercentageRange = (percentage: number) => {
     if (percentage >= 0 && percentage <= 100) {
@@ -179,19 +138,6 @@ const HandRangeSelector: React.FC<HandRangeSelectorProps> = ({
     // Invalid values are ignored - slider keeps its current value
   };
 
-  const getDisplayTitle = () => {
-    if (player) {
-      return `Select Hand Range - ${player.name}`;
-    }
-    return 'Select Hand Range';
-  };
-
-  const getDisplaySubtitle = () => {
-    if (player) {
-      return `${player.position} • ${rangeStats.combinations} combinations (${rangeStats.percentage}%)`;
-    }
-    return `${rangeStats.combinations} combinations (${rangeStats.percentage}%)`;
-  };
 
   return (
     <div className="h-full flex flex-col">
@@ -218,7 +164,6 @@ const HandRangeSelector: React.FC<HandRangeSelectorProps> = ({
                   row.map((hand, j) => (
                     <button
                       key={`${i}-${j}`}
-                      onClick={() => toggleHand(hand)}
                       onMouseDown={(e) => {
                         e.preventDefault();
                         handleMouseDown(hand);
