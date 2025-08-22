@@ -34,14 +34,25 @@ const HandRangeSelector: React.FC<HandRangeSelectorProps> = ({
     setSliderValue(rangeStats.percentage);
   }, [rangeStats.percentage]);
 
-  // Handle global mouse up to end dragging
+  // Handle global mouse up and touch end to end dragging
   useEffect(() => {
-    const handleMouseUp = () => {
+    const handleGlobalMouseUp = () => {
       setIsDragging(false);
     };
 
-    document.addEventListener('mouseup', handleMouseUp);
-    return () => document.removeEventListener('mouseup', handleMouseUp);
+    const handleGlobalTouchEnd = () => {
+      setIsDragging(false);
+    };
+
+    document.addEventListener('mouseup', handleGlobalMouseUp);
+    document.addEventListener('touchend', handleGlobalTouchEnd);
+    document.addEventListener('touchcancel', handleGlobalTouchEnd);
+    
+    return () => {
+      document.removeEventListener('mouseup', handleGlobalMouseUp);
+      document.removeEventListener('touchend', handleGlobalTouchEnd);
+      document.removeEventListener('touchcancel', handleGlobalTouchEnd);
+    };
   }, []);
 
   // Generate hand matrix
@@ -114,6 +125,30 @@ const HandRangeSelector: React.FC<HandRangeSelectorProps> = ({
   };
 
   const handleMouseUp = () => {
+    setIsDragging(false);
+  };
+
+  // Touch event handlers for mobile drag selection
+  const handleTouchStart = (hand: string, e: React.TouchEvent) => {
+    e.preventDefault(); // Prevent scrolling
+    handleMouseDown(hand);
+  };
+
+  const handleTouchMove = (e: React.TouchEvent) => {
+    if (!isDragging) return;
+    
+    e.preventDefault(); // Prevent scrolling
+    
+    // Get the element under the touch point
+    const touch = e.touches[0];
+    const element = document.elementFromPoint(touch.clientX, touch.clientY) as HTMLElement;
+    
+    if (element && element.dataset && element.dataset.hand) {
+      handleMouseEnter(element.dataset.hand);
+    }
+  };
+
+  const handleTouchEnd = () => {
     setIsDragging(false);
   };
 
@@ -202,12 +237,16 @@ const HandRangeSelector: React.FC<HandRangeSelectorProps> = ({
                   row.map((hand, j) => (
                     <button
                       key={`${i}-${j}`}
+                      data-hand={hand}
                       onMouseDown={(e) => {
                         e.preventDefault();
                         handleMouseDown(hand);
                       }}
                       onMouseEnter={() => handleMouseEnter(hand)}
                       onMouseUp={handleMouseUp}
+                      onTouchStart={(e) => handleTouchStart(hand, e)}
+                      onTouchMove={handleTouchMove}
+                      onTouchEnd={handleTouchEnd}
                       className={`
                         w-full h-full text-xs sm:text-sm font-bold rounded-md sm:rounded-lg border-2 transition-all duration-200
                         flex items-center justify-center cursor-pointer select-none shadow-sm
