@@ -342,7 +342,7 @@ const BoardSelector: React.FC<BoardSelectorProps> = ({ board, onBoardChange }) =
               {board.length > 0 && (
                 <button
                   onClick={clearBoard}
-                  className="px-4 py-2 bg-gradient-to-r from-red-600 to-red-700 hover:from-red-500 hover:to-red-600 text-white rounded-lg font-medium transition-all duration-200 shadow-lg"
+                  className="btn-danger btn-sm"
                 >
                   Clear Board
                 </button>
@@ -377,10 +377,10 @@ const BoardSelector: React.FC<BoardSelectorProps> = ({ board, onBoardChange }) =
                   setIsSelectingFlop(false);
                   setIsSelectingCard(null);
                 }}
-                className={`w-full px-3 py-2 rounded-lg text-sm font-medium transition-all duration-200 shadow-lg ${
+                className={`w-full btn-sm ${
                   board.length === 0 && tempFlopCards.length === 0 && !isSelectingFlop
-                    ? 'bg-gradient-to-r from-purple-600 to-purple-700 text-white' 
-                    : 'bg-gradient-to-r from-slate-600 to-slate-700 hover:from-slate-500 hover:to-slate-600 text-white'
+                    ? 'btn-primary' 
+                    : 'btn-secondary'
                 }`}
               >
                 🎲 Pre-flop (No community cards)
@@ -395,7 +395,7 @@ const BoardSelector: React.FC<BoardSelectorProps> = ({ board, onBoardChange }) =
                   setTempFlopCards([]);
                   setIsSelectingFlop(false);
                 }}
-                className="w-full px-3 py-2 bg-gradient-to-r from-blue-600 to-blue-700 hover:from-blue-500 hover:to-blue-600 text-white rounded-lg text-sm font-medium transition-all duration-200 shadow-lg"
+                className="w-full btn-secondary btn-sm"
               >
                 🏔️ Dry Board (A♥ K♦ Q♣)
               </button>
@@ -409,7 +409,7 @@ const BoardSelector: React.FC<BoardSelectorProps> = ({ board, onBoardChange }) =
                   setTempFlopCards([]);
                   setIsSelectingFlop(false);
                 }}
-                className="w-full px-3 py-2 bg-gradient-to-r from-orange-600 to-orange-700 hover:from-orange-500 hover:to-orange-600 text-white rounded-lg text-sm font-medium transition-all duration-200 shadow-lg"
+                className="w-full btn-secondary btn-sm"
               >
                 🌊 Draw Heavy (9♥ 8♥ 7♠)
               </button>

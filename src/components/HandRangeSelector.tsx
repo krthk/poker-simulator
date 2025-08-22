@@ -327,42 +327,42 @@ const HandRangeSelector: React.FC<HandRangeSelectorProps> = ({
             <div className="grid grid-cols-2 gap-2">
               <button 
                 onClick={() => setPercentageRange(PRESET_PERCENTAGES.PREMIUM)} 
-                className="px-3 py-2 bg-gradient-to-r from-red-600 to-red-700 hover:from-red-500 hover:to-red-600 text-white rounded-lg text-xs font-medium transition-all duration-200 shadow-lg"
+                className="btn-preset-premium btn-xs"
               >
                 Premium
                 <div className="text-xs opacity-80">{PRESET_PERCENTAGES.PREMIUM}%</div>
               </button>
               <button 
                 onClick={() => setPercentageRange(PRESET_PERCENTAGES.ULTRA_TIGHT)} 
-                className="px-3 py-2 bg-gradient-to-r from-orange-600 to-orange-700 hover:from-orange-500 hover:to-orange-600 text-white rounded-lg text-xs font-medium transition-all duration-200 shadow-lg"
+                className="btn-preset-ultra-tight btn-xs"
               >
                 Ultra-tight
                 <div className="text-xs opacity-80">{PRESET_PERCENTAGES.ULTRA_TIGHT}%</div>
               </button>
               <button 
                 onClick={() => setPercentageRange(PRESET_PERCENTAGES.TIGHT)} 
-                className="px-3 py-2 bg-gradient-to-r from-yellow-600 to-yellow-700 hover:from-yellow-500 hover:to-yellow-600 text-white rounded-lg text-xs font-medium transition-all duration-200 shadow-lg"
+                className="btn-preset-tight btn-xs"
               >
                 Tight
                 <div className="text-xs opacity-80">{PRESET_PERCENTAGES.TIGHT}%</div>
               </button>
               <button 
                 onClick={() => setPercentageRange(PRESET_PERCENTAGES.MEDIUM)} 
-                className="px-3 py-2 bg-gradient-to-r from-blue-600 to-blue-700 hover:from-blue-500 hover:to-blue-600 text-white rounded-lg text-xs font-medium transition-all duration-200 shadow-lg"
+                className="btn-preset-medium btn-xs"
               >
                 Medium
                 <div className="text-xs opacity-80">{PRESET_PERCENTAGES.MEDIUM}%</div>
               </button>
               <button 
                 onClick={() => setPercentageRange(PRESET_PERCENTAGES.LOOSE)} 
-                className="px-3 py-2 bg-gradient-to-r from-green-600 to-green-700 hover:from-green-500 hover:to-green-600 text-white rounded-lg text-xs font-medium transition-all duration-200 shadow-lg"
+                className="btn-preset-loose btn-xs"
               >
                 Loose
                 <div className="text-xs opacity-80">{PRESET_PERCENTAGES.LOOSE}%</div>
               </button>
               <button 
                 onClick={() => setPercentageRange(100)}
-                className="px-3 py-2 bg-gradient-to-r from-purple-600 to-purple-700 hover:from-purple-500 hover:to-purple-600 text-white rounded-lg text-xs font-medium transition-all duration-200 shadow-lg"
+                className="btn-preset-any-two btn-xs"
               >
                 Any Two
                 <div className="text-xs opacity-80">100%</div>
@@ -376,7 +376,7 @@ const HandRangeSelector: React.FC<HandRangeSelectorProps> = ({
               {/* Clear button */}
               <button 
                 onClick={clearRange}
-                className="w-full px-4 py-2 bg-gradient-to-r from-red-600 to-red-700 hover:from-red-500 hover:to-red-600 text-white rounded-lg font-medium transition-all duration-200 shadow-lg"
+                className="w-full btn-danger btn-sm"
               >
                 Clear All Hands
               </button>

@@ -505,7 +505,7 @@ function App() {
                   </div>
                   <button
                     onClick={resetToPlayers}
-                    className="px-6 py-3 bg-purple-600 hover:bg-purple-500 text-white rounded-lg font-semibold transition-all duration-200"
+                    className="btn-primary btn-lg"
                   >
                     ← Back to Player Selection
                   </button>
@@ -517,7 +517,7 @@ function App() {
                 <div className="flex justify-center mt-8">
                   <button
                     onClick={() => setCurrentStep('board')}
-                    className="px-8 py-3 bg-purple-600 hover:bg-purple-500 text-white rounded-lg font-semibold text-lg transition-all duration-200 shadow-lg hover:shadow-xl"
+                    className="btn-primary btn-lg"
                   >
                     Continue to Board Setup
                   </button>
@@ -578,7 +578,7 @@ function App() {
                   <button
                     onClick={handleRunSimulation}
                     disabled={isSimulating || !canProceedToBoard()}
-                    className="px-12 py-4 bg-green-600 hover:bg-green-500 disabled:bg-slate-600 text-white font-bold text-xl rounded-lg shadow-lg hover:shadow-xl transition-all duration-200"
+                    className="btn-success btn-lg"
                   >
                     {isSimulating ? (
                       <div className="flex items-center space-x-2">

@@ -57,37 +57,25 @@ const ResultsDisplay: React.FC<ResultsDisplayProps> = ({ results, players: conte
 
   return (
     <div className="h-full flex flex-col space-y-3">
-      {/* Compact simulation summary */}
-      <div className="bg-slate-700/20 rounded-lg p-3">
-        <div className="flex items-center justify-between text-sm">
-          <div className="flex items-center space-x-4">
-            <span className="text-slate-300">
-              {players.length} players • {formatNumber(multiResults.iterations)} iterations
-            </span>
-            {board && (
-              <span className="text-slate-400">
-                {board.length === 0 ? 'Pre-flop' : 
-                 board.length === 3 ? 'Flop' : 
-                 board.length === 4 ? 'Turn' : 'River'}
-              </span>
-            )}
-          </div>
-          {/* Action buttons integrated in header */}
-          <div className="flex items-center space-x-2">
-            <button
-              onClick={onRunAgain}
-              disabled={isSimulating}
-              className="px-3 py-1 bg-green-600 hover:bg-green-500 disabled:bg-slate-600 text-white text-xs font-medium rounded transition-all duration-200"
-            >
-              {isSimulating ? 'Running...' : 'Run Again'}
-            </button>
-            <button
-              onClick={onNewAnalysis}
-              className="px-3 py-1 bg-slate-600 hover:bg-slate-500 text-white text-xs font-medium rounded transition-all duration-200"
-            >
-              New Analysis
-            </button>
-          </div>
+      {/* Action buttons header */}
+      <div className="flex items-center justify-between">
+        <div className="flex items-center space-x-2">
+          <button
+            onClick={onRunAgain}
+            disabled={isSimulating}
+            className="btn-success btn-sm"
+          >
+            {isSimulating ? 'Running...' : 'Run Again'}
+          </button>
+          <button
+            onClick={onNewAnalysis}
+            className="btn-secondary btn-sm"
+          >
+            New Analysis
+          </button>
+        </div>
+        <div className="text-sm text-slate-400">
+          {formatNumber(multiResults.iterations)} iterations
         </div>
       </div>
 
@@ -96,97 +84,90 @@ const ResultsDisplay: React.FC<ResultsDisplayProps> = ({ results, players: conte
         {/* Results Section - Takes main space */}
         <div className="flex-1">
           <div className="bg-slate-800/60 rounded-xl p-4 border border-slate-600/30">
-            <div className="space-y-3">
-              {/* Compact winner banner */}
-              <div className="flex items-center justify-between p-3 bg-gradient-to-r from-yellow-500/20 to-orange-500/20 rounded-xl border border-yellow-500/30">
-                <div className="flex items-center space-x-3">
-                  <span className="text-2xl">🏆</span>
-                  <div>
-                    <div className="text-yellow-400 font-bold">{players[0]?.playerName || 'N/A'}</div>
-                    <div className="text-yellow-300 text-sm">{formatPercentage(players[0]?.equity || 0)}% Equity</div>
-                  </div>
-                </div>
-              </div>
-
-                {/* Player Results */}
-                <div className="space-y-2">
-                  {players.map((player, index) => {
-                    const color = getPlayerColor(player, index);
-                    const colorClasses = getColorClasses(color);
-                    const isHero = player.playerName === 'Hero';
-                    const rank = index + 1;
-                    const isWinner = index === 0;
+            {/* Player Results */}
+            <div className="space-y-2">
+              {players.map((player, index) => {
+                const color = getPlayerColor(player, index);
+                const colorClasses = getColorClasses(color);
+                const isHero = player.playerName === 'Hero';
+                const rank = index + 1;
+                const isWinner = index === 0;
+                
+                return (
+                  <div key={player.playerId} className={`relative overflow-hidden`}>
+                    {/* Glow effect for winner and hero */}
+                    {(isWinner || isHero) && (
+                      <div className={`absolute inset-0 bg-gradient-to-r ${isWinner ? 'from-yellow-500/20 to-orange-500/20' : 'from-purple-500/20 to-purple-600/20'} rounded-2xl blur-sm`}></div>
+                    )}
                     
-                    return (
-                      <div key={player.playerId} className={`relative overflow-hidden`}>
-                        {/* Glow effect for winner and hero */}
-                        {(isWinner || isHero) && (
-                          <div className={`absolute inset-0 bg-gradient-to-r ${isWinner ? 'from-yellow-500/20 to-orange-500/20' : 'from-purple-500/20 to-purple-600/20'} rounded-2xl blur-sm`}></div>
-                        )}
-                        
-                        <div className={`relative bg-gradient-to-r ${colorClasses.bg} rounded-xl p-3 border-2 ${isWinner ? 'border-yellow-500/50' : isHero ? 'border-purple-500/50' : colorClasses.border} backdrop-blur-sm`}>
-                          {/* Rank badge */}
-                          <div className={`absolute -top-1 -left-1 w-6 h-6 ${isWinner ? 'bg-yellow-500' : isHero ? 'bg-purple-600' : 'bg-slate-700'} border border-white/20 rounded-full flex items-center justify-center shadow-lg`}>
-                            <span className="text-white font-bold text-xs">#{rank}</span>
-                          </div>
-                          
-                          {/* Hero crown */}
-                          {isHero && (
-                            <div className="absolute -top-1 right-4">
-                              <span className="text-2xl drop-shadow-lg">👑</span>
-                            </div>
-                          )}
+                    <div className={`relative bg-gradient-to-r ${colorClasses.bg} rounded-xl p-4 border-2 ${isWinner ? 'border-yellow-500/50' : isHero ? 'border-purple-500/50' : colorClasses.border} backdrop-blur-sm`}>
+                      {/* Rank badge */}
+                      <div className={`absolute -top-2 -left-2 w-7 h-7 ${isWinner ? 'bg-yellow-500' : isHero ? 'bg-purple-600' : 'bg-slate-700'} border-2 border-white rounded-full flex items-center justify-center shadow-lg z-10`}>
+                        <span className="text-white font-bold text-xs">#{rank}</span>
+                      </div>
+                      
+                      {/* Hero crown */}
+                      {isHero && (
+                        <div className="absolute -top-3 -right-1 z-10">
+                          <span className="text-xl drop-shadow-lg">👑</span>
+                        </div>
+                      )}
 
-                          {/* Winner trophy */}
-                          {isWinner && !isHero && (
-                            <div className="absolute -top-1 right-4">
-                              <span className="text-2xl drop-shadow-lg">🏆</span>
-                            </div>
-                          )}
+                      {/* Winner trophy */}
+                      {isWinner && !isHero && (
+                        <div className="absolute -top-3 -right-1 z-10">
+                          <span className="text-xl drop-shadow-lg">🏆</span>
+                        </div>
+                      )}
 
-                          <div className="flex items-center justify-between">
-                            <div className="flex items-center space-x-2">
-                              <div className={`w-10 h-10 rounded-full ${colorClasses.progress} flex items-center justify-center text-white font-bold text-sm border-2 border-white/30 shadow-lg`}>
-                                {player.playerName.charAt(0)}
-                              </div>
-                              <div>
-                                <h3 className={`${colorClasses.text} font-bold flex items-center gap-1`}>
-                                  {player.playerName}
-                                  {isHero && <span className="text-xs">👑</span>}
-                                  {isWinner && !isHero && <span className="text-xs">🏆</span>}
-                                </h3>
-                                <p className="text-slate-300 text-xs">{player.position}</p>
-                              </div>
-                            </div>
-                            <div className="text-right">
-                              <div className={`${colorClasses.text} font-bold text-xl drop-shadow-sm`}>
-                                {formatPercentage(player.equity)}%
-                              </div>
-                              <div className="text-slate-400 text-xs">equity</div>
-                            </div>
-                          </div>
-                          
-                          {/* Compact Progress bar */}
-                          <div className="w-full bg-white/10 rounded-full h-2 mt-2 mb-2 shadow-inner">
-                            <div
-                              className={`${colorClasses.progress} h-2 rounded-full transition-all duration-1000 ease-out relative shadow-lg`}
-                              style={{ width: `${player.equity}%` }}
-                            >
-                              <div className="absolute inset-0 bg-gradient-to-r from-transparent to-white/30 rounded-full"></div>
-                            </div>
-                          </div>
+                      {/* Winner + Hero combined */}
+                      {isWinner && isHero && (
+                        <div className="absolute -top-3 -right-1 z-10 flex space-x-1">
+                          <span className="text-lg drop-shadow-lg">🏆</span>
+                          <span className="text-lg drop-shadow-lg">👑</span>
+                        </div>
+                      )}
 
-                          {/* Inline compact stats */}
-                          <div className="flex justify-between text-xs text-white/70">
-                            <span>W: {formatNumber(player.wins)}</span>
-                            <span>T: {formatNumber(player.ties)}</span>
-                            <span>Tot: {formatNumber(player.total)}</span>
+                      <div className="flex items-center justify-between">
+                        <div className="flex items-center space-x-2">
+                          <div className={`w-10 h-10 rounded-full ${colorClasses.progress} flex items-center justify-center text-white font-bold text-sm border-2 border-white/30 shadow-lg`}>
+                            {player.playerName.charAt(0)}
+                          </div>
+                          <div>
+                            <h3 className={`${colorClasses.text} font-bold`}>
+                              {player.playerName}
+                            </h3>
+                            <p className="text-slate-400 text-xs">{player.position}</p>
                           </div>
                         </div>
+                        <div className="text-right">
+                          <div className={`${colorClasses.text} font-bold text-xl drop-shadow-sm`}>
+                            {formatPercentage(player.equity)}%
+                          </div>
+                          <div className="text-slate-400 text-xs">equity</div>
+                        </div>
                       </div>
-                    );
-                  })}
-                </div>
+                      
+                      {/* Compact Progress bar */}
+                      <div className="w-full bg-white/10 rounded-full h-2 mt-2 mb-2 shadow-inner">
+                        <div
+                          className={`${colorClasses.progress} h-2 rounded-full transition-all duration-1000 ease-out relative shadow-lg`}
+                          style={{ width: `${player.equity}%` }}
+                        >
+                          <div className="absolute inset-0 bg-gradient-to-r from-transparent to-white/30 rounded-full"></div>
+                        </div>
+                      </div>
+
+                      {/* Inline compact stats */}
+                      <div className="flex justify-between text-xs text-white/70">
+                        <span>W: {formatNumber(player.wins)}</span>
+                        <span>T: {formatNumber(player.ties)}</span>
+                        <span>Tot: {formatNumber(player.total)}</span>
+                      </div>
+                    </div>
+                  </div>
+                );
+              })}
             </div>
           </div>
         </div>

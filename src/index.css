@@ -36,6 +36,86 @@ body {
   @apply bg-pink-600 hover:bg-pink-500;
 }
 
+/* Standardized Button System */
+.btn-base {
+  @apply font-medium rounded-lg transition-all duration-200 shadow-lg hover:shadow-xl cursor-pointer select-none;
+}
+
+/* Primary buttons - Main actions */
+.btn-primary {
+  @apply btn-base bg-purple-600 hover:bg-purple-500 text-white;
+}
+
+/* Secondary buttons - Secondary actions */
+.btn-secondary {
+  @apply btn-base bg-slate-600 hover:bg-slate-500 text-white;
+}
+
+/* Success buttons - Positive actions */
+.btn-success {
+  @apply btn-base bg-green-600 hover:bg-green-500 text-white;
+}
+
+/* Danger buttons - Destructive actions */
+.btn-danger {
+  @apply btn-base bg-red-600 hover:bg-red-500 text-white;
+}
+
+/* Size variants */
+.btn-xs {
+  @apply px-2 py-1 text-xs;
+}
+
+.btn-sm {
+  @apply px-3 py-1.5 text-sm;
+}
+
+.btn-md {
+  @apply px-4 py-2 text-sm;
+}
+
+.btn-lg {
+  @apply px-6 py-3 text-base;
+}
+
+.btn-xl {
+  @apply px-8 py-4 text-lg;
+}
+
+/* Disabled state */
+.btn-base:disabled {
+  @apply opacity-50 cursor-not-allowed;
+}
+
+.btn-primary:disabled, .btn-success:disabled {
+  @apply bg-slate-600 hover:bg-slate-600;
+}
+
+/* Preset range buttons with specific colors */
+.btn-preset-premium {
+  @apply btn-base bg-gradient-to-r from-red-600 to-red-700 hover:from-red-500 hover:to-red-600 text-white;
+}
+
+.btn-preset-ultra-tight {
+  @apply btn-base bg-gradient-to-r from-orange-600 to-orange-700 hover:from-orange-500 hover:to-orange-600 text-white;
+}
+
+.btn-preset-tight {
+  @apply btn-base bg-gradient-to-r from-yellow-600 to-yellow-700 hover:from-yellow-500 hover:to-yellow-600 text-white;
+}
+
+.btn-preset-medium {
+  @apply btn-base bg-gradient-to-r from-blue-600 to-blue-700 hover:from-blue-500 hover:to-blue-600 text-white;
+}
+
+.btn-preset-loose {
+  @apply btn-base bg-gradient-to-r from-green-600 to-green-700 hover:from-green-500 hover:to-green-600 text-white;
+}
+
+.btn-preset-any-two {
+  @apply btn-base bg-gradient-to-r from-purple-600 to-purple-700 hover:from-purple-500 hover:to-purple-600 text-white;
+}
+
 /* Custom range slider styling */
 .slider {
   -webkit-appearance: none;
