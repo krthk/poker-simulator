@@ -178,7 +178,7 @@ describe('Multi-Player Simulator Tests', () => {
   });
 
   describe('Edge Cases and Validation', () => {
-    test('Single player should return 100% equity', () => {
+    test('Single player should throw error (requires at least 2 players)', () => {
       const players: Player[] = [
         createPlayer('solo', 'Solo Player', 'BTN', ['AA'], true)
       ];
@@ -188,13 +188,10 @@ describe('Multi-Player Simulator Tests', () => {
         iterations: 1000
       };
 
-      const result = runSimulation(config);
-      
-      expect(result.players).toHaveLength(1);
-      expect(result.players[0].equity).toBe(100);
+      expect(() => runSimulation(config)).toThrow('At least 2 players with ranges are required for simulation');
     });
 
-    test('Empty ranges should handle gracefully', () => {
+    test('Empty ranges should throw error (no valid players)', () => {
       const players: Player[] = [
         createPlayer('p1', 'Player 1', 'BTN', [], true),
         createPlayer('p2', 'Player 2', 'BB', ['AA'])
@@ -205,11 +202,11 @@ describe('Multi-Player Simulator Tests', () => {
         iterations: 100
       };
 
-      // Should handle empty ranges without crashing
-      expect(() => runSimulation(config)).not.toThrow();
+      // Should throw error because only 1 player has a valid range
+      expect(() => runSimulation(config)).toThrow('At least 2 players with ranges are required for simulation');
     });
 
-    test('Inactive players should be filtered out', () => {
+    test('Inactive players should be filtered out and throw error if not enough remain', () => {
       const players: Player[] = [
         createPlayer('active', 'Active Player', 'BTN', ['AA'], true),
         { ...createPlayer('inactive', 'Inactive Player', 'BB', ['KK']), isActive: false }
@@ -220,10 +217,8 @@ describe('Multi-Player Simulator Tests', () => {
         iterations: 1000
       };
 
-      const result = runSimulation(config);
-      
-      expect(result.players).toHaveLength(1);
-      expect(result.players[0].name).toBe('Active Player');
+      // Should throw error because only 1 active player remains
+      expect(() => runSimulation(config)).toThrow('At least 2 players with ranges are required for simulation');
     });
 
     test('Large number of players (6+ players)', () => {
@@ -233,14 +228,14 @@ describe('Multi-Player Simulator Tests', () => {
 
       const config: SimulationConfig = {
         players,
-        iterations: 1000
+        iterations: 2000
       };
 
       const result = runSimulation(config);
       
       expect(result.players).toHaveLength(6);
       
-      // All players have AA, so equity should be roughly equal
+      // All players have AA, so equity should be roughly equal (1/6 ≈ 16.7%)
       result.players.forEach(player => {
         expect(player.equity).toBeGreaterThan(10);
         expect(player.equity).toBeLessThan(25);

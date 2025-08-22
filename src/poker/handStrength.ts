@@ -7,7 +7,7 @@
  */
 
 // Import the actual equity-based ranking system  
-import { EQUITY_BASED_RANKING, getHandEquity } from './actualEquityRanking';
+import { EQUITY_BASED_RANKING } from './actualEquityRanking';
 
 // Complete ranking of all 169 poker starting hands from strongest to weakest
 // Based on ACTUAL pre-flop equity against random hands (Monte Carlo simulation: 5,000 iterations per hand)
