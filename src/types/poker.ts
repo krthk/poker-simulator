@@ -13,10 +13,22 @@ export type Board = Card[]; // 0-5 community cards
 // Hand range types
 export type HandRange = string[]; // e.g., ['AA', 'KK', 'AKs', 'AQo']
 
+// Table and player types
+export type TablePosition = 'UTG' | 'UTG+1' | 'MP1' | 'MP2' | 'MP3' | 'HJ' | 'CO' | 'BTN' | 'SB' | 'BB';
+
+export interface Player {
+  id: string;
+  name: string;
+  position: TablePosition;
+  range: HandRange;
+  isHero: boolean;
+  isActive: boolean;
+  seatNumber: number; // 1-10 for full ring
+}
+
 // Simulation types
 export interface SimulationConfig {
-  heroRange: HandRange;
-  villainRange: HandRange;
+  players: Player[];
   iterations: number;
   board?: Board;
 }
@@ -28,7 +40,27 @@ export interface EquityResult {
   total: number;   // Total hands simulated
 }
 
+export interface PlayerResult extends EquityResult {
+  playerId: string;
+  playerName: string;
+  position: TablePosition;
+}
+
 export interface SimulationResult {
+  players: PlayerResult[];
+  iterations: number;
+  totalHandsSimulated: number;
+}
+
+// Legacy types for backward compatibility
+export interface LegacySimulationConfig {
+  heroRange: HandRange;
+  villainRange: HandRange;
+  iterations: number;
+  board?: Board;
+}
+
+export interface LegacySimulationResult {
   hero: EquityResult;
   villain: EquityResult;
   iterations: number;

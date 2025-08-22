@@ -1,5 +1,6 @@
-import { runSimulation } from '../poker/simulator';
-import { SimulationConfig, Card } from '../types/poker';
+import { describe, test, expect } from 'vitest';
+import { runSimulation, runLegacySimulation } from '../poker/simulator';
+import { SimulationConfig, LegacySimulationConfig, Card } from '../types/poker';
 
 // Test utilities
 function createCard(rank: string, suit: string): Card {
@@ -8,9 +9,7 @@ function createCard(rank: string, suit: string): Card {
 
 function expectApproximateEquity(actual: number, expected: number, tolerance: number = 2) {
   const diff = Math.abs(actual - expected);
-  if (diff > tolerance) {
-    throw new Error(`Expected equity ~${expected}%, got ${actual}% (diff: ${diff.toFixed(1)}%)`);
-  }
+  expect(diff).toBeLessThanOrEqual(tolerance);
 }
 
 describe('Poker Simulator Accuracy Tests', () => {
@@ -18,13 +17,13 @@ describe('Poker Simulator Accuracy Tests', () => {
   describe('Pre-flop Scenarios', () => {
     
     test('AA vs KK - Aces should win ~82%', () => {
-      const config: SimulationConfig = {
+      const config: LegacySimulationConfig = {
         heroRange: ['AA'],
         villainRange: ['KK'],
         iterations: 100000
       };
       
-      const result = runSimulation(config);
+      const result = runLegacySimulation(config);
       console.log(`AA vs KK: Hero ${result.hero.equity.toFixed(1)}%, Villain ${result.villain.equity.toFixed(1)}%`);
       
       expectApproximateEquity(result.hero.equity, 82, 3);
@@ -32,13 +31,13 @@ describe('Poker Simulator Accuracy Tests', () => {
     });
 
     test('AA vs AKs - Aces should win ~87%', () => {
-      const config: SimulationConfig = {
+      const config: LegacySimulationConfig = {
         heroRange: ['AA'],
         villainRange: ['AKs'],
         iterations: 100000
       };
       
-      const result = runSimulation(config);
+      const result = runLegacySimulation(config);
       console.log(`AA vs AKs: Hero ${result.hero.equity.toFixed(1)}%, Villain ${result.villain.equity.toFixed(1)}%`);
       
       expectApproximateEquity(result.hero.equity, 87, 3);
@@ -46,13 +45,13 @@ describe('Poker Simulator Accuracy Tests', () => {
     });
 
     test('AA vs AKo - Aces should win ~88%', () => {
-      const config: SimulationConfig = {
+      const config: LegacySimulationConfig = {
         heroRange: ['AA'],
         villainRange: ['AKo'],
         iterations: 100000
       };
       
-      const result = runSimulation(config);
+      const result = runLegacySimulation(config);
       console.log(`AA vs AKo: Hero ${result.hero.equity.toFixed(1)}%, Villain ${result.villain.equity.toFixed(1)}%`);
       
       expectApproximateEquity(result.hero.equity, 88, 3);
@@ -60,13 +59,13 @@ describe('Poker Simulator Accuracy Tests', () => {
     });
 
     test('AKs vs QQ - Queens should win ~54%', () => {
-      const config: SimulationConfig = {
+      const config: LegacySimulationConfig = {
         heroRange: ['AKs'],
         villainRange: ['QQ'],
         iterations: 100000
       };
       
-      const result = runSimulation(config);
+      const result = runLegacySimulation(config);
       console.log(`AKs vs QQ: Hero ${result.hero.equity.toFixed(1)}%, Villain ${result.villain.equity.toFixed(1)}%`);
       
       expectApproximateEquity(result.hero.equity, 46, 3);
@@ -74,13 +73,13 @@ describe('Poker Simulator Accuracy Tests', () => {
     });
 
     test('72o vs AA - Worst vs Best hand', () => {
-      const config: SimulationConfig = {
+      const config: LegacySimulationConfig = {
         heroRange: ['72o'],
         villainRange: ['AA'],
         iterations: 100000
       };
       
-      const result = runSimulation(config);
+      const result = runLegacySimulation(config);
       console.log(`72o vs AA: Hero ${result.hero.equity.toFixed(1)}%, Villain ${result.villain.equity.toFixed(1)}%`);
       
       expectApproximateEquity(result.hero.equity, 12, 3);
@@ -97,14 +96,14 @@ describe('Poker Simulator Accuracy Tests', () => {
         createCard('2', 'c')
       ];
       
-      const config: SimulationConfig = {
+      const config: LegacySimulationConfig = {
         heroRange: ['AA'],
         villainRange: ['KK'],
         board,
         iterations: 50000
       };
       
-      const result = runSimulation(config);
+      const result = runLegacySimulation(config);
       console.log(`AA vs KK on K72: Hero ${result.hero.equity.toFixed(1)}%, Villain ${result.villain.equity.toFixed(1)}%`);
       
       expectApproximateEquity(result.hero.equity, 5, 3);
@@ -118,14 +117,14 @@ describe('Poker Simulator Accuracy Tests', () => {
         createCard('7', 'c')
       ];
       
-      const config: SimulationConfig = {
+      const config: LegacySimulationConfig = {
         heroRange: ['AKs'],
         villainRange: ['QQ'],
         board,
         iterations: 50000
       };
       
-      const result = runSimulation(config);
+      const result = runLegacySimulation(config);
       console.log(`AKs vs QQ on AQ7: Hero ${result.hero.equity.toFixed(1)}%, Villain ${result.villain.equity.toFixed(1)}%`);
       
       expectApproximateEquity(result.hero.equity, 80, 5);
@@ -139,14 +138,14 @@ describe('Poker Simulator Accuracy Tests', () => {
         createCard('2', 'h')
       ];
       
-      const config: SimulationConfig = {
+      const config: LegacySimulationConfig = {
         heroRange: ['T9s'], // Two pair + flush draw
         villainRange: ['77'], // Set of sevens
         board,
         iterations: 50000
       };
       
-      const result = runSimulation(config);
+      const result = runLegacySimulation(config);
       console.log(`T9s vs 77 on 7T2 (two spades): Hero ${result.hero.equity.toFixed(1)}%, Villain ${result.villain.equity.toFixed(1)}%`);
       
       // T9s has two pair, flush draw, and straight draw - should have decent equity
@@ -165,14 +164,14 @@ describe('Poker Simulator Accuracy Tests', () => {
         createCard('K', 'h')
       ];
       
-      const config: SimulationConfig = {
-        heroRange: ['QhJh'], // Flush draw with overcards
+      const config: LegacySimulationConfig = {
+        heroRange: ['QJs'], // Flush draw with overcards
         villainRange: ['AKo'], // Two pair
         board,
         iterations: 50000
       };
       
-      const result = runSimulation(config);
+      const result = runLegacySimulation(config);
       console.log(`QhJh vs AKo on A72K (3 hearts): Hero ${result.hero.equity.toFixed(1)}%, Villain ${result.villain.equity.toFixed(1)}%`);
       
       // Flush draw has 9 outs (hearts) to win
@@ -192,14 +191,14 @@ describe('Poker Simulator Accuracy Tests', () => {
         createCard('5', 'h')
       ];
       
-      const config: SimulationConfig = {
-        heroRange: ['7h8h'], // Flush
+      const config: LegacySimulationConfig = {
+        heroRange: ['78s'], // Flush
         villainRange: ['AK'], // Two pair
         board,
         iterations: 10000 // River is deterministic, fewer iterations needed
       };
       
-      const result = runSimulation(config);
+      const result = runLegacySimulation(config);
       console.log(`7h8h vs AK on AhKhQh2c5h: Hero ${result.hero.equity.toFixed(1)}%, Villain ${result.villain.equity.toFixed(1)}%`);
       
       // Flush should win 100% vs two pair
@@ -216,14 +215,14 @@ describe('Poker Simulator Accuracy Tests', () => {
         createCard('9', 'c')
       ];
       
-      const config: SimulationConfig = {
-        heroRange: ['K8'], // Straight (K high)
+      const config: LegacySimulationConfig = {
+        heroRange: ['K8o'], // Straight (K high)
         villainRange: ['99'], // Set of nines (full house)
         board,
         iterations: 10000
       };
       
-      const result = runSimulation(config);
+      const result = runLegacySimulation(config);
       console.log(`K8 vs 99 on 9TJQQ9: Hero ${result.hero.equity.toFixed(1)}%, Villain ${result.villain.equity.toFixed(1)}%`);
       
       // Set should win (full house vs straight)
@@ -235,13 +234,13 @@ describe('Poker Simulator Accuracy Tests', () => {
   describe('Range vs Range Scenarios', () => {
     
     test('Pocket pairs vs Big cards', () => {
-      const config: SimulationConfig = {
+      const config: LegacySimulationConfig = {
         heroRange: ['22', '33', '44', '55', '66', '77', '88', '99', 'TT', 'JJ', 'QQ', 'KK', 'AA'],
         villainRange: ['AKs', 'AQs', 'AJs', 'AKo', 'AQo', 'AJo', 'KQs', 'KJs', 'KQo'],
         iterations: 50000
       };
       
-      const result = runSimulation(config);
+      const result = runLegacySimulation(config);
       console.log(`All pairs vs Big cards: Hero ${result.hero.equity.toFixed(1)}%, Villain ${result.villain.equity.toFixed(1)}%`);
       
       // Pocket pairs should have slight edge pre-flop
@@ -250,7 +249,7 @@ describe('Poker Simulator Accuracy Tests', () => {
     });
 
     test('Premium pairs vs Everything', () => {
-      const config: SimulationConfig = {
+      const config: LegacySimulationConfig = {
         heroRange: ['AA', 'KK', 'QQ'],
         villainRange: ['JJ', 'TT', '99', '88', '77', '66', '55', '44', '33', '22', 
                       'AKs', 'AQs', 'AJs', 'AKo', 'AQo', 'AJo', 'KQs', 'KJs', 'KQo',
@@ -258,7 +257,7 @@ describe('Poker Simulator Accuracy Tests', () => {
         iterations: 50000
       };
       
-      const result = runSimulation(config);
+      const result = runLegacySimulation(config);
       console.log(`AA/KK/QQ vs Wide range: Hero ${result.hero.equity.toFixed(1)}%, Villain ${result.villain.equity.toFixed(1)}%`);
       
       // Premium pairs should dominate
@@ -270,13 +269,13 @@ describe('Poker Simulator Accuracy Tests', () => {
   describe('Edge Cases', () => {
     
     test('Identical hands should split 50/50', () => {
-      const config: SimulationConfig = {
+      const config: LegacySimulationConfig = {
         heroRange: ['AKs'],
         villainRange: ['AKs'],
         iterations: 50000
       };
       
-      const result = runSimulation(config);
+      const result = runLegacySimulation(config);
       console.log(`AKs vs AKs: Hero ${result.hero.equity.toFixed(1)}%, Villain ${result.villain.equity.toFixed(1)}%`);
       
       // Should be very close to 50/50 (accounting for ties)
@@ -285,13 +284,13 @@ describe('Poker Simulator Accuracy Tests', () => {
     });
 
     test('High iteration count for precision', () => {
-      const config: SimulationConfig = {
+      const config: LegacySimulationConfig = {
         heroRange: ['AA'],
         villainRange: ['KK'],
         iterations: 1000000 // High iteration count
       };
       
-      const result = runSimulation(config);
+      const result = runLegacySimulation(config);
       console.log(`AA vs KK (1M iterations): Hero ${result.hero.equity.toFixed(2)}%, Villain ${result.villain.equity.toFixed(2)}%`);
       
       // Should be very precise with 1M iterations

@@ -25,7 +25,7 @@ export function evaluateHand(cards: Card[]): HandEvaluation {
   
   // Determine hand rank
   if (isFlush && isStraight) {
-    const highCard = getRankValue(sortedCards[0].rank);
+    const highCard = getStraightHighCard(sortedCards);
     if (highCard === 14 && getRankValue(sortedCards[1].rank) === 13) { // A-K high straight flush
       return { rank: HandRank.ROYAL_FLUSH, value: highCard };
     }
@@ -49,7 +49,7 @@ export function evaluateHand(cards: Card[]): HandEvaluation {
   }
   
   if (isStraight) {
-    return { rank: HandRank.STRAIGHT, value: getRankValue(sortedCards[0].rank) };
+    return { rank: HandRank.STRAIGHT, value: getStraightHighCard(sortedCards) };
   }
   
   if (counts[0] === 3) {
@@ -106,9 +106,26 @@ function checkStraight(sortedCards: Card[]): boolean {
   return false;
 }
 
+function getStraightHighCard(sortedCards: Card[]): number {
+  // Check if this is a wheel straight (A-2-3-4-5)
+  if (sortedCards[0].rank === 'A' && 
+      sortedCards[1].rank === '5' && 
+      sortedCards[2].rank === '4' && 
+      sortedCards[3].rank === '3' && 
+      sortedCards[4].rank === '2') {
+    return 5; // Wheel straight is 5-high, not Ace-high
+  }
+  
+  // Regular straight - return the highest card
+  return getRankValue(sortedCards[0].rank);
+}
+
 export function compareHands(hand1: HandEvaluation, hand2: HandEvaluation): number {
   if (hand1.rank !== hand2.rank) {
-    return hand1.rank - hand2.rank;
+    return hand1.rank > hand2.rank ? 1 : -1;
   }
-  return hand1.value - hand2.value;
+  
+  if (hand1.value > hand2.value) return 1;
+  if (hand1.value < hand2.value) return -1;
+  return 0; // Tie
 }
