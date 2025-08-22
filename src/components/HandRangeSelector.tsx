@@ -24,6 +24,7 @@ const HandRangeSelector: React.FC<HandRangeSelectorProps> = ({
 
   const [isDragging, setIsDragging] = useState<boolean>(false);
   const [dragSelecting, setDragSelecting] = useState<boolean>(true); // true = selecting, false = deselecting
+  const [isTouchDevice, setIsTouchDevice] = useState<boolean>(false);
   
   // Calculate current range statistics
   const rangeStats = getRangeStats(selectedRange);
@@ -34,26 +35,46 @@ const HandRangeSelector: React.FC<HandRangeSelectorProps> = ({
     setSliderValue(rangeStats.percentage);
   }, [rangeStats.percentage]);
 
+  // Detect touch capability on mount
+  useEffect(() => {
+    const hasTouchSupport = 'ontouchstart' in window || navigator.maxTouchPoints > 0;
+    if (hasTouchSupport) {
+      // Don't immediately set as touch device - wait for actual touch event
+      // This allows hybrid devices (like Surface) to use mouse when preferred
+    }
+  }, []);
+
   // Handle global mouse up and touch end to end dragging
   useEffect(() => {
     const handleGlobalMouseUp = () => {
-      setIsDragging(false);
+      if (!isTouchDevice) {
+        setIsDragging(false);
+      }
     };
 
     const handleGlobalTouchEnd = () => {
       setIsDragging(false);
     };
 
+    const handleGlobalMouseMove = () => {
+      // If mouse is used after touch, allow switching back to mouse mode
+      if (isTouchDevice && !isDragging) {
+        setIsTouchDevice(false);
+      }
+    };
+
     document.addEventListener('mouseup', handleGlobalMouseUp);
+    document.addEventListener('mousemove', handleGlobalMouseMove);
     document.addEventListener('touchend', handleGlobalTouchEnd);
     document.addEventListener('touchcancel', handleGlobalTouchEnd);
     
     return () => {
       document.removeEventListener('mouseup', handleGlobalMouseUp);
+      document.removeEventListener('mousemove', handleGlobalMouseMove);
       document.removeEventListener('touchend', handleGlobalTouchEnd);
       document.removeEventListener('touchcancel', handleGlobalTouchEnd);
     };
-  }, []);
+  }, [isTouchDevice, isDragging]);
 
   // Generate hand matrix
   const generateHandMatrix = () => {
@@ -98,7 +119,13 @@ const HandRangeSelector: React.FC<HandRangeSelectorProps> = ({
     onRangeChange(newRange);
   };
 
-  const handleMouseDown = (hand: string) => {
+  const handleMouseDown = (hand: string, e: React.MouseEvent) => {
+    // Prevent mouse events on touch devices to avoid double handling
+    if (isTouchDevice) {
+      e.preventDefault();
+      return;
+    }
+    
     const isSelected = isHandSelected(hand);
     setIsDragging(true);
     setDragSelecting(!isSelected); // If currently selected, we'll deselect; if not selected, we'll select
@@ -108,7 +135,8 @@ const HandRangeSelector: React.FC<HandRangeSelectorProps> = ({
   };
 
   const handleMouseEnter = (hand: string) => {
-    if (!isDragging) return;
+    // Prevent mouse events on touch devices to avoid double handling
+    if (isTouchDevice || !isDragging) return;
     
     const isSelected = isHandSelected(hand);
     
@@ -125,13 +153,22 @@ const HandRangeSelector: React.FC<HandRangeSelectorProps> = ({
   };
 
   const handleMouseUp = () => {
+    // Prevent mouse events on touch devices to avoid double handling
+    if (isTouchDevice) return;
     setIsDragging(false);
   };
 
   // Touch event handlers for mobile drag selection
   const handleTouchStart = (hand: string, e: React.TouchEvent) => {
     e.preventDefault(); // Prevent scrolling
-    handleMouseDown(hand);
+    setIsTouchDevice(true); // Mark this as a touch device
+    
+    const isSelected = isHandSelected(hand);
+    setIsDragging(true);
+    setDragSelecting(!isSelected);
+    
+    // Toggle the current hand
+    toggleHand(hand);
   };
 
   const handleTouchMove = (e: React.TouchEvent) => {
@@ -240,7 +277,7 @@ const HandRangeSelector: React.FC<HandRangeSelectorProps> = ({
                       data-hand={hand}
                       onMouseDown={(e) => {
                         e.preventDefault();
-                        handleMouseDown(hand);
+                        handleMouseDown(hand, e);
                       }}
                       onMouseEnter={() => handleMouseEnter(hand)}
                       onMouseUp={handleMouseUp}
