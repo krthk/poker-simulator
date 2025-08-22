@@ -1,4 +1,4 @@
-import { Hand, HandRange, Card, Rank } from '../types/poker';
+import { Hand, HandRange, Rank } from '../types/poker';
 import { RANKS, SUITS } from './deck';
 
 export function parseHandRange(rangeArray: HandRange): Hand[] {

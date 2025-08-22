@@ -1,6 +1,5 @@
-import React from 'react';
 import { render, screen, fireEvent } from '@testing-library/react';
-import { describe, it, expect, vi } from 'vitest';
+import { describe, it, expect, vi, beforeEach } from 'vitest';
 import BoardSelector from '../components/BoardSelector';
 
 describe('BoardSelector - Flow Control Regression Tests', () => {
@@ -18,11 +17,11 @@ describe('BoardSelector - Flow Control Regression Tests', () => {
   it('should start with empty board and no automatic flop selection', () => {
     render(<BoardSelector {...defaultProps} />);
     
-    // Should show "Set Flop" button when board is empty
-    expect(screen.getByText('Set Flop (3 cards)')).toBeInTheDocument();
+    // Should show pre-flop state text
+    expect(screen.getByText('Pre-flop')).toBeInTheDocument();
     
-    // Should show instruction to click button or proceed with empty board
-    expect(screen.getByText(/Click 'Set Flop' button to add community cards, or proceed with empty board/)).toBeInTheDocument();
+    // Should show pre-flop preset button
+    expect(screen.getByText('🎲 Pre-flop (No community cards)')).toBeInTheDocument();
     
     // Should NOT automatically show flop placeholders
     expect(screen.queryByText('F1')).not.toBeInTheDocument();
@@ -31,83 +30,83 @@ describe('BoardSelector - Flow Control Regression Tests', () => {
   it('should enter flop selection mode when Set Flop button is clicked', () => {
     render(<BoardSelector {...defaultProps} />);
     
-    // Click Set Flop button
-    const setFlopButton = screen.getByText('Set Flop (3 cards)');
-    fireEvent.click(setFlopButton);
+    // Click on flop section to start flop selection
+    const flopSection = screen.getByText('FLOP').closest('div');
+    fireEvent.click(flopSection!);
     
-    // Should now show flop selection UI
-    expect(screen.getByText('Selecting Flop Cards (0/3)')).toBeInTheDocument();
-    expect(screen.getByText('Cancel Flop Selection')).toBeInTheDocument();
-    
-    // Should show instruction for first card
-    expect(screen.getByText('Select first card for the flop')).toBeInTheDocument();
+    // Should now show flop selection modal
+    expect(screen.getByText('Set Flop')).toBeInTheDocument();
+    expect(screen.getByText('Suit:')).toBeInTheDocument();
+    expect(screen.getByText('Rank:')).toBeInTheDocument();
   });
 
   it('should allow canceling flop selection', () => {
     render(<BoardSelector {...defaultProps} />);
     
-    // Start flop selection
-    fireEvent.click(screen.getByText('Set Flop (3 cards)'));
+    // Start flop selection by clicking flop section
+    const flopSection = screen.getByText('FLOP').closest('div');
+    fireEvent.click(flopSection!);
     
-    // Cancel flop selection
-    fireEvent.click(screen.getByText('Cancel Flop Selection'));
+    // Cancel flop selection by clicking close button
+    const closeButton = screen.getByText('✕');
+    fireEvent.click(closeButton);
     
     // Should return to initial state
-    expect(screen.getByText('Set Flop (3 cards)')).toBeInTheDocument();
-    expect(screen.queryByText('Selecting Flop Cards')).not.toBeInTheDocument();
+    expect(screen.getByText('Pre-flop')).toBeInTheDocument();
+    expect(screen.queryByText('Set Flop')).not.toBeInTheDocument();
   });
 
   it('should allow simulation with empty board (pre-flop)', () => {
     render(<BoardSelector {...defaultProps} />);
     
-    // Should show pre-flop preset as selected
+    // Should show pre-flop preset button
     expect(screen.getByText('🎲 Pre-flop (No community cards)')).toBeInTheDocument();
     
-    // Should show instruction that empty board is allowed
-    expect(screen.getByText(/or proceed with empty board/)).toBeInTheDocument();
+    // Should show pre-flop state
+    expect(screen.getByText('Pre-flop')).toBeInTheDocument();
   });
 
   it('should show turn selection after flop is set', () => {
     const propsWithFlop = {
       board: [
-        { rank: 'A', suit: 'h' },
-        { rank: 'K', suit: 'd' },
-        { rank: 'Q', suit: 'c' }
+        { rank: 'A' as const, suit: 'h' as const },
+        { rank: 'K' as const, suit: 'd' as const },
+        { rank: 'Q' as const, suit: 'c' as const }
       ],
       onBoardChange: mockOnBoardChange
     };
 
     render(<BoardSelector {...propsWithFlop} />);
     
-    // Should show add turn button
-    expect(screen.getByText('ADD TURN')).toBeInTheDocument();
-    expect(screen.getByText('✅ Flop set • Click + to add turn card or any flop card to reset')).toBeInTheDocument();
+    // Should show flop set state and turn section clickable
+    expect(screen.getByText('Flop Set')).toBeInTheDocument();
+    expect(screen.getByText('TURN')).toBeInTheDocument();
   });
 
   it('should show river selection after turn is set', () => {
     const propsWithTurn = {
       board: [
-        { rank: 'A', suit: 'h' },
-        { rank: 'K', suit: 'd' },
-        { rank: 'Q', suit: 'c' },
-        { rank: 'J', suit: 's' }
+        { rank: 'A' as const, suit: 'h' as const },
+        { rank: 'K' as const, suit: 'd' as const },
+        { rank: 'Q' as const, suit: 'c' as const },
+        { rank: 'J' as const, suit: 's' as const }
       ],
       onBoardChange: mockOnBoardChange
     };
 
     render(<BoardSelector {...propsWithTurn} />);
     
-    // Should show add river button
-    expect(screen.getByText('ADD RIVER')).toBeInTheDocument();
-    expect(screen.getByText('🔄 Turn set • Click + to add river card, turn to remove, or any flop card to reset')).toBeInTheDocument();
+    // Should show turn set state and river section clickable
+    expect(screen.getByText('Turn Set')).toBeInTheDocument();
+    expect(screen.getByText('RIVER')).toBeInTheDocument();
   });
 
   it('should properly reset to empty board with pre-flop preset', () => {
     const propsWithCards = {
       board: [
-        { rank: 'A', suit: 'h' },
-        { rank: 'K', suit: 'd' },
-        { rank: 'Q', suit: 'c' }
+        { rank: 'A' as const, suit: 'h' as const },
+        { rank: 'K' as const, suit: 'd' as const },
+        { rank: 'Q' as const, suit: 'c' as const }
       ],
       onBoardChange: mockOnBoardChange
     };
@@ -124,12 +123,11 @@ describe('BoardSelector - Flow Control Regression Tests', () => {
   it('should not force flop selection when board is empty', () => {
     render(<BoardSelector {...defaultProps} />);
     
-    // Should NOT show automatic flop placeholders
-    expect(screen.queryByText('F1')).not.toBeInTheDocument();
-    expect(screen.queryByText('F2')).not.toBeInTheDocument();
-    expect(screen.queryByText('F3')).not.toBeInTheDocument();
+    // Should show pre-flop state without flop cards selected
+    expect(screen.getByText('Pre-flop')).toBeInTheDocument();
+    expect(screen.getByText('FLOP')).toBeInTheDocument();
     
-    // Should show trigger button instead
-    expect(screen.getByText('Set Flop (3 cards)')).toBeInTheDocument();
+    // Should not show any specific cards
+    expect(screen.queryByText('A♥')).not.toBeInTheDocument();
   });
 });

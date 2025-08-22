@@ -2,7 +2,7 @@ import { describe, test, expect, vi, beforeEach } from 'vitest';
 import { render, screen, fireEvent } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
 import HandRangeSelector from '../components/HandRangeSelector';
-import { Player, TablePosition } from '../types/poker';
+import { Player } from '../types/poker';
 
 const mockPlayer: Player = {
   id: 'test-player',
@@ -295,7 +295,6 @@ describe('HandRangeSelector Component', () => {
   });
 
   test('mouse events are handled correctly', async () => {
-    const user = userEvent.setup();
     
     render(
       <HandRangeSelector

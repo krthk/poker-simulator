@@ -1,5 +1,4 @@
 import { describe, test, expect } from 'vitest';
-import { runLegacySimulation } from '../poker/simulator';
 import { parseHandRange } from '../poker/rangeParser';
 
 describe('Simulation Combinatorics Verification', () => {
@@ -34,7 +33,6 @@ describe('Simulation Combinatorics Verification', () => {
     // Run a simulation where one player has only KTo and KTs
     // Track which specific hands are selected to verify proper weighting
     const heroRange = ['KTo', 'KTs'];
-    const villainRange = ['AA']; // Fixed strong hand
     
     console.log('\n🎲 Hand Selection Frequency Test:');
     

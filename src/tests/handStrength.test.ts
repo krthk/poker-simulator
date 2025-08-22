@@ -282,16 +282,16 @@ describe('Hand Strength Ranking System', () => {
         if (isValidHand(kingSuited) && isValidHand(queenSuited)) {
           const kingRank = getHandRank(kingSuited);
           const queenRank = getHandRank(queenSuited);
-          expect(kingRank).toBeLessThan(queenRank, 
-            `${kingSuited} (rank ${kingRank}) should rank higher than ${queenSuited} (rank ${queenRank})`);
+          expect(kingRank, 
+            `${kingSuited} (rank ${kingRank}) should rank higher than ${queenSuited} (rank ${queenRank})`).toBeLessThan(queenRank);
         }
         
         // Check offsuit versions
         if (isValidHand(kingOffsuit) && isValidHand(queenOffsuit)) {
           const kingRank = getHandRank(kingOffsuit);
           const queenRank = getHandRank(queenOffsuit);
-          expect(kingRank).toBeLessThan(queenRank,
-            `${kingOffsuit} (rank ${kingRank}) should rank higher than ${queenOffsuit} (rank ${queenRank})`);
+          expect(kingRank,
+            `${kingOffsuit} (rank ${kingRank}) should rank higher than ${queenOffsuit} (rank ${queenRank})`).toBeLessThan(queenRank);
         }
       });
     });
@@ -309,16 +309,16 @@ describe('Hand Strength Ranking System', () => {
         if (isValidHand(queenSuited) && isValidHand(jackSuited)) {
           const queenRank = getHandRank(queenSuited);
           const jackRank = getHandRank(jackSuited);
-          expect(queenRank).toBeLessThan(jackRank,
-            `${queenSuited} (rank ${queenRank}) should rank higher than ${jackSuited} (rank ${jackRank})`);
+          expect(queenRank,
+            `${queenSuited} (rank ${queenRank}) should rank higher than ${jackSuited} (rank ${jackRank})`).toBeLessThan(jackRank);
         }
         
         // Check offsuit versions
         if (isValidHand(queenOffsuit) && isValidHand(jackOffsuit)) {
           const queenRank = getHandRank(queenOffsuit);
           const jackRank = getHandRank(jackOffsuit);
-          expect(queenRank).toBeLessThan(jackRank,
-            `${queenOffsuit} (rank ${queenRank}) should rank higher than ${jackOffsuit} (rank ${jackRank})`);
+          expect(queenRank,
+            `${queenOffsuit} (rank ${queenRank}) should rank higher than ${jackOffsuit} (rank ${jackRank})`).toBeLessThan(jackRank);
         }
       });
     });
@@ -336,16 +336,16 @@ describe('Hand Strength Ranking System', () => {
         if (isValidHand(jackSuited) && isValidHand(tenSuited)) {
           const jackRank = getHandRank(jackSuited);
           const tenRank = getHandRank(tenSuited);
-          expect(jackRank).toBeLessThan(tenRank,
-            `${jackSuited} (rank ${jackRank}) should rank higher than ${tenSuited} (rank ${tenRank})`);
+          expect(jackRank,
+            `${jackSuited} (rank ${jackRank}) should rank higher than ${tenSuited} (rank ${tenRank})`).toBeLessThan(tenRank);
         }
         
         // Check offsuit versions
         if (isValidHand(jackOffsuit) && isValidHand(tenOffsuit)) {
           const jackRank = getHandRank(jackOffsuit);
           const tenRank = getHandRank(tenOffsuit);
-          expect(jackRank).toBeLessThan(tenRank,
-            `${jackOffsuit} (rank ${jackRank}) should rank higher than ${tenOffsuit} (rank ${tenRank})`);
+          expect(jackRank,
+            `${jackOffsuit} (rank ${jackRank}) should rank higher than ${tenOffsuit} (rank ${tenRank})`).toBeLessThan(tenRank);
         }
       });
     });
@@ -363,17 +363,17 @@ describe('Hand Strength Ranking System', () => {
         if (isValidHand(suited) && isValidHand(offsuit)) {
           const suitedRank = getHandRank(suited);
           const offsuitRank = getHandRank(offsuit);
-          expect(suitedRank).toBeLessThan(offsuitRank,
-            `${suited} (rank ${suitedRank}) should rank higher than ${offsuit} (rank ${offsuitRank})`);
+          expect(suitedRank,
+            `${suited} (rank ${suitedRank}) should rank higher than ${offsuit} (rank ${offsuitRank})`).toBeLessThan(offsuitRank);
         }
       });
     });
 
     test('specific bug fixes: K vs Q with low kickers', () => {
       // These are the specific bugs that were found
-      expect(getHandRank('K2s')).toBeLessThan(getHandRank('Q2s'), 'K2s should rank higher than Q2s');
-      expect(getHandRank('K3s')).toBeLessThan(getHandRank('Q3s'), 'K3s should rank higher than Q3s');
-      expect(getHandRank('K2o')).toBeLessThan(getHandRank('Q2o'), 'K2o should rank higher than Q2o');
+      expect(getHandRank('K2s'), 'K2s should rank higher than Q2s').toBeLessThan(getHandRank('Q2s'));
+      expect(getHandRank('K3s'), 'K3s should rank higher than Q3s').toBeLessThan(getHandRank('Q3s'));
+      expect(getHandRank('K2o'), 'K2o should rank higher than Q2o').toBeLessThan(getHandRank('Q2o'));
     });
   });
 
@@ -411,7 +411,7 @@ describe('Hand Strength Ranking System', () => {
     });
 
     test('preset percentages work with getTopPercentHands', () => {
-      Object.entries(PRESET_PERCENTAGES).forEach(([name, percentage]) => {
+      Object.entries(PRESET_PERCENTAGES).forEach(([, percentage]) => {
         expect(() => getTopPercentHands(percentage)).not.toThrow();
         
         const hands = getTopPercentHands(percentage);
@@ -430,7 +430,7 @@ describe('Hand Strength Ranking System', () => {
       
       // If Q2s is included, K2s must also be included (K2s is stronger)
       if (q2sIncluded) {
-        expect(k2sIncluded).toBe(true, 'If Q2s is in top 50%, K2s must also be included as it is stronger');
+        expect(k2sIncluded, 'If Q2s is in top 50%, K2s must also be included as it is stronger').toBe(true);
       }
     });
   });

@@ -11,7 +11,7 @@ interface ResultsDisplayProps {
   isSimulating?: boolean;
 }
 
-const ResultsDisplay: React.FC<ResultsDisplayProps> = ({ results, players: contextPlayers, board, iterations: contextIterations, onRunAgain, onNewAnalysis, isSimulating }) => {
+const ResultsDisplay: React.FC<ResultsDisplayProps> = ({ results, onRunAgain, onNewAnalysis, isSimulating }) => {
   // Check if this is the new multi-player format or legacy format
   const isMultiPlayer = 'players' in results;
   
@@ -106,27 +106,6 @@ const ResultsDisplay: React.FC<ResultsDisplayProps> = ({ results, players: conte
                         <span className="text-white font-bold text-xs">#{rank}</span>
                       </div>
                       
-                      {/* Hero crown */}
-                      {isHero && (
-                        <div className="absolute -top-3 -right-1 z-10">
-                          <span className="text-xl drop-shadow-lg">👑</span>
-                        </div>
-                      )}
-
-                      {/* Winner trophy */}
-                      {isWinner && !isHero && (
-                        <div className="absolute -top-3 -right-1 z-10">
-                          <span className="text-xl drop-shadow-lg">🏆</span>
-                        </div>
-                      )}
-
-                      {/* Winner + Hero combined */}
-                      {isWinner && isHero && (
-                        <div className="absolute -top-3 -right-1 z-10 flex space-x-1">
-                          <span className="text-lg drop-shadow-lg">🏆</span>
-                          <span className="text-lg drop-shadow-lg">👑</span>
-                        </div>
-                      )}
 
                       <div className="flex items-center justify-between">
                         <div className="flex items-center space-x-2">
@@ -134,8 +113,9 @@ const ResultsDisplay: React.FC<ResultsDisplayProps> = ({ results, players: conte
                             {player.playerName.charAt(0)}
                           </div>
                           <div>
-                            <h3 className={`${colorClasses.text} font-bold`}>
-                              {player.playerName}
+                            <h3 className={`${colorClasses.text} font-bold flex items-center space-x-1`}>
+                              <span>{player.playerName}</span>
+                              {isHero && <span className="text-yellow-400 drop-shadow-lg">👑</span>}
                             </h3>
                             <p className="text-slate-400 text-xs">{player.position}</p>
                           </div>

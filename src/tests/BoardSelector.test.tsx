@@ -1,12 +1,11 @@
 import { describe, test, expect, vi, beforeEach } from 'vitest';
-import { render, screen, fireEvent } from '@testing-library/react';
+import { render, screen } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
 import BoardSelector from '../components/BoardSelector';
 import { Card } from '../types/poker';
 
 describe('BoardSelector Component', () => {
   const mockOnBoardChange = vi.fn();
-  const mockCanProceed = vi.fn();
   
   beforeEach(() => {
     vi.clearAllMocks();
@@ -17,7 +16,6 @@ describe('BoardSelector Component', () => {
       <BoardSelector
         board={[]}
         onBoardChange={mockOnBoardChange}
-        canProceed={true}
       />
     );
 
@@ -37,7 +35,6 @@ describe('BoardSelector Component', () => {
       <BoardSelector
         board={board}
         onBoardChange={mockOnBoardChange}
-        canProceed={true}
       />
     );
 
@@ -51,7 +48,6 @@ describe('BoardSelector Component', () => {
       <BoardSelector
         board={[]}
         onBoardChange={mockOnBoardChange}
-        canProceed={true}
       />
     );
 
@@ -69,7 +65,6 @@ describe('BoardSelector Component', () => {
       <BoardSelector
         board={[]}
         onBoardChange={mockOnBoardChange}
-        canProceed={false}
       />
     );
 
@@ -93,7 +88,6 @@ describe('BoardSelector Component', () => {
       <BoardSelector
         board={initialBoard}
         onBoardChange={mockOnBoardChange}
-        canProceed={false}
       />
     );
 
@@ -111,7 +105,6 @@ describe('BoardSelector Component', () => {
       <BoardSelector
         board={[]}
         onBoardChange={mockOnBoardChange}
-        canProceed={true}
       />
     );
 
@@ -130,7 +123,6 @@ describe('BoardSelector Component', () => {
       <BoardSelector
         board={validFlop}
         onBoardChange={mockOnBoardChange}
-        canProceed={true}
       />
     );
 
@@ -147,7 +139,6 @@ describe('BoardSelector Component', () => {
       <BoardSelector
         board={[]}
         onBoardChange={mockOnBoardChange}
-        canProceed={false}
       />
     );
 
@@ -172,7 +163,6 @@ describe('BoardSelector Component', () => {
       <BoardSelector
         board={boardWithCards}
         onBoardChange={mockOnBoardChange}
-        canProceed={true}
       />
     );
 
@@ -200,7 +190,6 @@ describe('BoardSelector Component', () => {
       <BoardSelector
         board={boardWithCards}
         onBoardChange={mockOnBoardChange}
-        canProceed={false}
       />
     );
 
@@ -220,7 +209,6 @@ describe('BoardSelector Component', () => {
       <BoardSelector
         board={boardWithCards}
         onBoardChange={mockOnBoardChange}
-        canProceed={false}
       />
     );
 
@@ -237,7 +225,6 @@ describe('BoardSelector Component', () => {
       <BoardSelector
         board={[]}
         onBoardChange={mockOnBoardChange}
-        canProceed={true}
       />
     );
 
@@ -253,7 +240,6 @@ describe('BoardSelector Component', () => {
       <BoardSelector
         board={[]}
         onBoardChange={mockOnBoardChange}
-        canProceed={true}
       />
     );
 
@@ -277,7 +263,6 @@ describe('BoardSelector Component', () => {
       <BoardSelector
         board={flopBoard}
         onBoardChange={mockOnBoardChange}
-        canProceed={true}
       />
     );
 
@@ -305,7 +290,6 @@ describe('BoardSelector Component', () => {
       <BoardSelector
         board={turnBoard}
         onBoardChange={mockOnBoardChange}
-        canProceed={true}
       />
     );
 
@@ -325,10 +309,9 @@ describe('BoardSelector Component', () => {
       <BoardSelector
         board={[]}
         onBoardChange={mockOnBoardChange}
-        canProceed={true}
       />
     );
-    expect(screen.getByText('Pre-flop (No board cards)')).toBeInTheDocument();
+    expect(screen.getByText('Pre-flop')).toBeInTheDocument();
 
     // Test flop
     const flopBoard: Card[] = [
@@ -340,10 +323,9 @@ describe('BoardSelector Component', () => {
       <BoardSelector
         board={flopBoard}
         onBoardChange={mockOnBoardChange}
-        canProceed={true}
       />
     );
-    expect(screen.getByText('Flop')).toBeInTheDocument();
+    expect(screen.getByText('Flop Set')).toBeInTheDocument();
 
     // Test turn
     const turnBoard: Card[] = [...flopBoard, { rank: 'J', suit: 's' }];
@@ -351,10 +333,9 @@ describe('BoardSelector Component', () => {
       <BoardSelector
         board={turnBoard}
         onBoardChange={mockOnBoardChange}
-        canProceed={true}
       />
     );
-    expect(screen.getByText('Turn')).toBeInTheDocument();
+    expect(screen.getByText('Turn Set')).toBeInTheDocument();
 
     // Test river
     const riverBoard: Card[] = [...turnBoard, { rank: 'T', suit: 'h' }];
@@ -362,10 +343,9 @@ describe('BoardSelector Component', () => {
       <BoardSelector
         board={riverBoard}
         onBoardChange={mockOnBoardChange}
-        canProceed={true}
       />
     );
-    expect(screen.getByText('River')).toBeInTheDocument();
+    expect(screen.getByText('Complete Board')).toBeInTheDocument();
   });
 
   test('prevents selecting more than 5 cards', async () => {
@@ -383,7 +363,6 @@ describe('BoardSelector Component', () => {
       <BoardSelector
         board={fullBoard}
         onBoardChange={mockOnBoardChange}
-        canProceed={true}
       />
     );
 

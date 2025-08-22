@@ -1,4 +1,4 @@
-import React from 'react';
+// React import removed as it's not needed in React 17+
 import { render, screen, fireEvent } from '@testing-library/react';
 import { describe, it, expect, vi } from 'vitest';
 import App from '../App';

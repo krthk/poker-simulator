@@ -6,7 +6,6 @@ import {
   Hand, 
   Card, 
   Board, 
-  Player,
   PlayerResult 
 } from '../types/poker';
 import { createDeck, shuffleDeck, removeCardsFromDeck } from './deck';
@@ -73,6 +72,7 @@ export function runSimulation(config: SimulationConfig): SimulationResult {
     return {
       playerId: player.id,
       playerName: player.name,
+      name: player.name, // Alias for backward compatibility
       position: player.position,
       equity,
       wins: stat.wins,

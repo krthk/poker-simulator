@@ -43,6 +43,7 @@ export interface EquityResult {
 export interface PlayerResult extends EquityResult {
   playerId: string;
   playerName: string;
+  name: string; // Alias for playerName for backward compatibility
   position: TablePosition;
 }
 

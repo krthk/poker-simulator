@@ -1,6 +1,6 @@
 import { describe, test, expect } from 'vitest';
-import { runSimulation, runLegacySimulation } from '../poker/simulator';
-import { SimulationConfig, LegacySimulationConfig, Card } from '../types/poker';
+import { runLegacySimulation } from '../poker/simulator';
+import { LegacySimulationConfig, Card } from '../types/poker';
 
 // Test utilities
 function createCard(rank: string, suit: string): Card {

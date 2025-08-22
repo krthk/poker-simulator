@@ -116,6 +116,11 @@ body {
   @apply btn-base bg-gradient-to-r from-purple-600 to-purple-700 hover:from-purple-500 hover:to-purple-600 text-white;
 }
 
+/* Player selection button hover effects */
+.hover\:scale-102:hover {
+  transform: scale(1.02);
+}
+
 /* Custom range slider styling */
 .slider {
   -webkit-appearance: none;

@@ -1,6 +1,5 @@
-import React from 'react';
 import { render, screen, fireEvent } from '@testing-library/react';
-import { describe, it, expect, vi } from 'vitest';
+import { describe, it, expect, vi, beforeEach } from 'vitest';
 import HandRangeSelector from '../components/HandRangeSelector';
 import { Player } from '../types/poker';
 
@@ -79,7 +78,6 @@ describe('HandRangeSelector - Slider Regression Tests', () => {
   it('should update slider position when preset buttons are clicked', () => {
     render(<HandRangeSelector {...defaultProps} />);
     
-    const slider = screen.getByRole('slider');
     const tightButton = screen.getByText('Tight');
     
     // Click tight preset (15.4%)

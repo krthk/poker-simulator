@@ -179,13 +179,6 @@ describe('Hand Ranking Tests', () => {
   });
 
   describe('Texas Hold\'em Starting Hand Rankings', () => {
-    // Import getBestHand function for testing 7-card evaluation
-    const getBestHand = (cards: any[]) => {
-      // This is a test implementation - in real code this would be imported
-      if (cards.length === 5) return evaluateHand(cards);
-      // For this test, just use the first 5 cards as a simplified version
-      return evaluateHand(cards.slice(0, 5));
-    };
     
     it('should rank AA as stronger than KK', () => {
       const aces = [card('A', 'h'), card('A', 'd')];

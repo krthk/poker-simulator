@@ -1,8 +1,8 @@
 import { describe, test, expect, vi, beforeEach } from 'vitest';
-import { render, screen, fireEvent } from '@testing-library/react';
+import { render, screen } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
 import TableSelector from '../components/TableSelector';
-import { Player, TablePosition } from '../types/poker';
+import { Player } from '../types/poker';
 
 // Mock player data
 const mockPlayers: Player[] = [
@@ -27,8 +27,8 @@ const mockPlayers: Player[] = [
 ];
 
 describe('TableSelector Component', () => {
-  const mockSetPlayers = vi.fn();
-  const mockSetSelectedPlayer = vi.fn();
+  const mockOnPlayersChange = vi.fn();
+  const mockOnPlayerSelect = vi.fn();
 
   beforeEach(() => {
     vi.clearAllMocks();
@@ -38,9 +38,9 @@ describe('TableSelector Component', () => {
     render(
       <TableSelector
         players={[]}
-        setPlayers={mockSetPlayers}
+        onPlayersChange={mockOnPlayersChange}
         selectedPlayer={null}
-        setSelectedPlayer={mockSetSelectedPlayer}
+        onPlayerSelect={mockOnPlayerSelect}
       />
     );
 
@@ -56,24 +56,24 @@ describe('TableSelector Component', () => {
     render(
       <TableSelector
         players={mockPlayers}
-        setPlayers={mockSetPlayers}
+        onPlayersChange={mockOnPlayersChange}
         selectedPlayer={null}
-        setSelectedPlayer={mockSetSelectedPlayer}
+        onPlayerSelect={mockOnPlayerSelect}
       />
     );
 
     expect(screen.getByText('Hero')).toBeInTheDocument();
     expect(screen.getByText('Villain 1')).toBeInTheDocument();
-    expect(screen.getByText('2 hands')).toBeInTheDocument(); // Range count for Hero
+    expect(screen.getByText('2')).toBeInTheDocument(); // Range count for Hero
   });
 
   test('shows active players summary', () => {
     render(
       <TableSelector
         players={mockPlayers}
-        setPlayers={mockSetPlayers}
+        onPlayersChange={mockOnPlayersChange}
         selectedPlayer={null}
-        setSelectedPlayer={mockSetSelectedPlayer}
+        onPlayerSelect={mockOnPlayerSelect}
       />
     );
 
@@ -88,9 +88,9 @@ describe('TableSelector Component', () => {
     render(
       <TableSelector
         players={[]}
-        setPlayers={mockSetPlayers}
+        onPlayersChange={mockOnPlayersChange}
         selectedPlayer={null}
-        setSelectedPlayer={mockSetSelectedPlayer}
+        onPlayerSelect={mockOnPlayerSelect}
       />
     );
 
@@ -98,11 +98,11 @@ describe('TableSelector Component', () => {
     const utgSeat = screen.getByText('UTG');
     await user.click(utgSeat);
 
-    expect(mockSetPlayers).toHaveBeenCalled();
+    expect(mockOnPlayersChange).toHaveBeenCalled();
     // Check that the call adds a new player
-    const callArgs = mockSetPlayers.mock.calls[0][0];
+    const callArgs = mockOnPlayersChange.mock.calls[0][0];
     expect(callArgs).toHaveLength(1);
-    expect(callArgs[0].position).toBe(TablePosition.UTG);
+    expect(callArgs[0].position).toBe('UTG');
   });
 
   test('removes player when clicking occupied seat', async () => {
@@ -111,9 +111,9 @@ describe('TableSelector Component', () => {
     render(
       <TableSelector
         players={mockPlayers}
-        setPlayers={mockSetPlayers}
+        onPlayersChange={mockOnPlayersChange}
         selectedPlayer={null}
-        setSelectedPlayer={mockSetSelectedPlayer}
+        onPlayerSelect={mockOnPlayerSelect}
       />
     );
 
@@ -121,9 +121,9 @@ describe('TableSelector Component', () => {
     const heroSeat = screen.getByText('Hero');
     await user.click(heroSeat.closest('g') || heroSeat);
 
-    expect(mockSetPlayers).toHaveBeenCalled();
+    expect(mockOnPlayersChange).toHaveBeenCalled();
     // Should remove the Hero player
-    const callArgs = mockSetPlayers.mock.calls[0][0];
+    const callArgs = mockOnPlayersChange.mock.calls[0][0];
     expect(callArgs).toHaveLength(1);
     expect(callArgs[0].name).toBe('Villain 1');
   });
@@ -134,9 +134,9 @@ describe('TableSelector Component', () => {
     render(
       <TableSelector
         players={mockPlayers}
-        setPlayers={mockSetPlayers}
+        onPlayersChange={mockOnPlayersChange}
         selectedPlayer={null}
-        setSelectedPlayer={mockSetSelectedPlayer}
+        onPlayerSelect={mockOnPlayerSelect}
       />
     );
 
@@ -146,8 +146,8 @@ describe('TableSelector Component', () => {
     
     await user.click(setHeroButtons[0]);
 
-    expect(mockSetPlayers).toHaveBeenCalled();
-    const callArgs = mockSetPlayers.mock.calls[0][0];
+    expect(mockOnPlayersChange).toHaveBeenCalled();
+    const callArgs = mockOnPlayersChange.mock.calls[0][0];
     // Hero should be unset, Villain 1 should become hero
     expect(callArgs.find((p: Player) => p.name === 'Hero')?.isHero).toBe(false);
     expect(callArgs.find((p: Player) => p.name === 'Villain 1')?.isHero).toBe(true);
@@ -159,25 +159,25 @@ describe('TableSelector Component', () => {
     render(
       <TableSelector
         players={mockPlayers}
-        setPlayers={mockSetPlayers}
+        onPlayersChange={mockOnPlayersChange}
         selectedPlayer={null}
-        setSelectedPlayer={mockSetSelectedPlayer}
+        onPlayerSelect={mockOnPlayerSelect}
       />
     );
 
     const clearButton = screen.getByText('Clear All');
     await user.click(clearButton);
 
-    expect(mockSetPlayers).toHaveBeenCalledWith([]);
+    expect(mockOnPlayersChange).toHaveBeenCalledWith([]);
   });
 
   test('displays correct seat labels and positions', () => {
     render(
       <TableSelector
         players={[]}
-        setPlayers={mockSetPlayers}
+        onPlayersChange={mockOnPlayersChange}
         selectedPlayer={null}
-        setSelectedPlayer={mockSetSelectedPlayer}
+        onPlayerSelect={mockOnPlayerSelect}
       />
     );
 
@@ -189,7 +189,6 @@ describe('TableSelector Component', () => {
   });
 
   test('prevents adding more than 10 players', async () => {
-    const user = userEvent.setup();
     
     // Create 10 players (max capacity)
     const fullTable: Player[] = Array.from({ length: 10 }, (_, i) => ({
@@ -205,9 +204,9 @@ describe('TableSelector Component', () => {
     render(
       <TableSelector
         players={fullTable}
-        setPlayers={mockSetPlayers}
+        onPlayersChange={mockOnPlayersChange}
         selectedPlayer={null}
-        setSelectedPlayer={mockSetSelectedPlayer}
+        onPlayerSelect={mockOnPlayerSelect}
       />
     );
 
@@ -231,9 +230,9 @@ describe('TableSelector Component', () => {
     render(
       <TableSelector
         players={playersWithEmptyRange}
-        setPlayers={mockSetPlayers}
+        onPlayersChange={mockOnPlayersChange}
         selectedPlayer={null}
-        setSelectedPlayer={mockSetSelectedPlayer}
+        onPlayerSelect={mockOnPlayerSelect}
       />
     );
 
@@ -245,9 +244,9 @@ describe('TableSelector Component', () => {
     render(
       <TableSelector
         players={mockPlayers}
-        setPlayers={mockSetPlayers}
+        onPlayersChange={mockOnPlayersChange}
         selectedPlayer={null}
-        setSelectedPlayer={mockSetSelectedPlayer}
+        onPlayerSelect={mockOnPlayerSelect}
       />
     );
 
@@ -265,21 +264,21 @@ describe('TableSelector Component', () => {
     render(
       <TableSelector
         players={[]}
-        setPlayers={mockSetPlayers}
+        onPlayersChange={mockOnPlayersChange}
         selectedPlayer={null}
-        setSelectedPlayer={mockSetSelectedPlayer}
+        onPlayerSelect={mockOnPlayerSelect}
       />
     );
 
     // Click multiple empty seats
     await user.click(screen.getByText('UTG')); // UTG
     
-    expect(mockSetPlayers).toHaveBeenCalledTimes(1);
-    let callArgs = mockSetPlayers.mock.calls[0][0];
-    expect(callArgs[0].name).toBe('Player 1');
+    expect(mockOnPlayersChange).toHaveBeenCalledTimes(1);
+    let callArgs = mockOnPlayersChange.mock.calls[0][0];
+    expect(callArgs[0].name).toBe('Hero'); // First player is Hero
 
     // Reset mock and simulate adding another player
-    mockSetPlayers.mockClear();
+    mockOnPlayersChange.mockClear();
     
     // Simulate existing player state
     const existingPlayers = [callArgs[0]];
@@ -287,16 +286,16 @@ describe('TableSelector Component', () => {
     render(
       <TableSelector
         players={existingPlayers}
-        setPlayers={mockSetPlayers}
+        onPlayersChange={mockOnPlayersChange}
         selectedPlayer={null}
-        setSelectedPlayer={mockSetSelectedPlayer}
+        onPlayerSelect={mockOnPlayerSelect}
       />
     );
 
     await user.click(screen.getByText('UTG+1')); // Next available seat
     
-    expect(mockSetPlayers).toHaveBeenCalledTimes(1);
-    callArgs = mockSetPlayers.mock.calls[0][0];
+    expect(mockOnPlayersChange).toHaveBeenCalledTimes(1);
+    callArgs = mockOnPlayersChange.mock.calls[0][0];
     expect(callArgs).toHaveLength(2);
     expect(callArgs[1].name).toBe('Player 2');
   });

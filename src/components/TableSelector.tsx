@@ -125,15 +125,6 @@ const TableSelector: React.FC<TableSelectorProps> = ({
     }
   };
 
-  const setAsHero = (seat: number) => {
-    const newPlayers = players.map(p => ({
-      ...p,
-      isHero: p.seatNumber === seat,
-      name: p.seatNumber === seat ? 'Hero' : p.name.replace('Hero', `Player ${p.seatNumber}`)
-    }));
-    onPlayersChange(newPlayers);
-    setHeroSet(true);
-  };
 
   const getSeatPosition = (seat: number) => {
     // Get available seats for current format and find the index of this seat
