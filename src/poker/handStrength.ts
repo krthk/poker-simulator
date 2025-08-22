@@ -2,16 +2,17 @@
  * Hand strength ranking and top percentage selection for poker starting hands
  * 
  * This module provides a comprehensive ranking of all 169 possible poker starting hands
- * ordered by their expected strength/equity in heads-up play.
+ * ordered by their pre-flop equity against random hands - the gold standard used by
+ * professional poker analysis tools.
  */
 
-// Import the algorithmic ranking system
-import { createAlgorithmicRanking } from './handStrengthAlgorithmic';
+// Import the actual equity-based ranking system  
+import { EQUITY_BASED_RANKING, getHandEquity } from './actualEquityRanking';
 
 // Complete ranking of all 169 poker starting hands from strongest to weakest
-// Generated algorithmically to ensure correctness and consistency
-// Based on heads-up equity calculations and poker theory
-export const HAND_STRENGTH_RANKING: readonly string[] = createAlgorithmicRanking();
+// Based on ACTUAL pre-flop equity against random hands (Monte Carlo simulation: 5,000 iterations per hand)
+// This is the definitive ranking used by professional poker analysis
+export const HAND_STRENGTH_RANKING: readonly string[] = EQUITY_BASED_RANKING;
 
 /**
  * Gets the rank/position of a hand in the strength ranking (1-169)
@@ -33,35 +34,78 @@ export function getHandStrengthPercentage(hand: string): number {
 }
 
 /**
- * Selects the top N% of poker hands by strength
+ * Get number of combinations for a hand type
+ */
+function getHandCombinations(hand: string): number {
+  if (hand.length === 2) {
+    // Pocket pair: C(4,2) = 6 combinations
+    return 6;
+  } else if (hand.endsWith('s')) {
+    // Suited: 4 combinations (one for each suit)
+    return 4;
+  } else if (hand.endsWith('o')) {
+    // Offsuit: 12 combinations (4*3 different suits)
+    return 12;
+  }
+  return 0;
+}
+
+/**
+ * Get the actual percentage of combinations a range represents
+ */
+export function getActualRangePercentage(hands: string[]): number {
+  const totalCombinations = hands.reduce((sum, hand) => sum + getHandCombinations(hand), 0);
+  return (totalCombinations / 1326) * 100;
+}
+
+/**
+ * Selects the top N% of poker hands by combinatorial weight
  * 
- * @param percentage - Percentage of hands to include (0-100)
- * @returns Array of hand strings representing the top N% of hands
+ * Uses the proper algorithm that accounts for the fact that different hand types
+ * have different numbers of combinations (pairs=6, suited=4, offsuit=12).
+ * This matches how professional poker tools calculate percentage ranges.
+ * 
+ * @param percentage - Percentage of total combinations to include (0-100)
+ * @returns Array of hand strings representing the top N% by combinations
  * 
  * @example
- * getTopPercentHands(5)   // Returns ~8 hands: ['AA', 'KK', 'QQ', 'JJ', 'TT', 'AKs', '99', 'AQs']
- * getTopPercentHands(10)  // Returns ~17 hands: top 10% including 88, AJs, AKo, etc.
- * getTopPercentHands(50)  // Returns ~85 hands: top half of all starting hands
+ * getTopPercentHands(5)   // Returns ~66 combinations: ['AA', 'KK', 'QQ', 'JJ', 'AKs', 'TT', 'AQs', 'AKo', ...]
+ * getTopPercentHands(10)  // Returns ~133 combinations: top 10% by weight
+ * getTopPercentHands(50)  // Returns ~663 combinations: top half by weight
  */
 export function getTopPercentHands(percentage: number): string[] {
   if (percentage < 0 || percentage > 100) {
     throw new Error('Percentage must be between 0 and 100');
   }
   
-  if (percentage === 0) {
-    return [];
+  if (percentage <= 0) return [];
+  if (percentage >= 100) return [...HAND_STRENGTH_RANKING];
+  
+  // Calculate target number of combinations (1326 total possible)
+  const targetCombinations = Math.round((percentage / 100) * 1326);
+  
+  const selectedHands: string[] = [];
+  let totalCombinations = 0;
+  
+  for (const hand of HAND_STRENGTH_RANKING) {
+    const combinations = getHandCombinations(hand);
+    
+    if (totalCombinations + combinations <= targetCombinations) {
+      selectedHands.push(hand);
+      totalCombinations += combinations;
+    } else {
+      // Decide whether to include this hand based on which is closer to target
+      const withHandDistance = Math.abs(targetCombinations - (totalCombinations + combinations));
+      const withoutHandDistance = Math.abs(targetCombinations - totalCombinations);
+      
+      if (withHandDistance < withoutHandDistance) {
+        selectedHands.push(hand);
+      }
+      break;
+    }
   }
   
-  if (percentage === 100) {
-    return [...HAND_STRENGTH_RANKING];
-  }
-  
-  // Calculate how many hands to include
-  const totalHands = HAND_STRENGTH_RANKING.length; // 169
-  const handsToInclude = Math.round((percentage / 100) * totalHands);
-  
-  // Take the first N hands (strongest)
-  return HAND_STRENGTH_RANKING.slice(0, handsToInclude);
+  return selectedHands;
 }
 
 /**
@@ -81,18 +125,19 @@ export function getRangeLabel(percentage: number): string {
 
 /**
  * Common preset percentages for quick selection
+ * Based on professional poker ranges and combinatorial weighting
  */
 export const PRESET_PERCENTAGES = {
-  PREMIUM: 2.4,      // ~4 hands: AA, KK, QQ, JJ
-  ULTRA_TIGHT: 5.9,  // ~10 hands: includes TT, AKs
-  VERY_TIGHT: 9.5,   // ~16 hands: includes 99, AQs, 88
-  TIGHT: 15.4,       // ~26 hands: includes AJs, AKo, 77
-  MEDIUM_TIGHT: 22.5, // ~38 hands: includes ATs, AQo, KQs
-  MEDIUM: 30.2,      // ~51 hands: includes 66, AJo, KJs
-  MEDIUM_LOOSE: 40.2, // ~68 hands: includes A9s, ATo, KQo
-  LOOSE: 50.3,       // ~85 hands: top half of all hands
-  VERY_LOOSE: 65.1,  // ~110 hands: includes many suited connectors
-  ULTRA_LOOSE: 80.5, // ~136 hands: most playable hands
+  PREMIUM: 2.1,      // ~28 combos: AA, KK, QQ, JJ
+  ULTRA_TIGHT: 4.5,  // ~60 combos: includes AKs, TT, AQs
+  TIGHT: 13.1,       // ~174 combos: tight opening range
+  MEDIUM_TIGHT: 20.1, // ~266 combos: standard opening range  
+  MEDIUM: 25.6,      // ~339 combos: loose opening range
+  MEDIUM_LOOSE: 35.4, // ~469 combos: wide opening range
+  LOOSE: 46.3,       // ~614 combos: very wide range
+  VERY_LOOSE: 60.2,  // ~798 combos: extremely wide range
+  ULTRA_LOOSE: 75.1, // ~995 combos: any two cards territory
+  ANY_TWO: 100.0,    // All 1326 combinations
 } as const;
 
 /**
