@@ -144,10 +144,10 @@ const BoardSelector: React.FC<BoardSelectorProps> = ({ board, onBoardChange }) =
   };
 
   return (
-    <div className="h-full flex flex-col space-y-4">
+    <div className="h-full flex flex-col space-y-2 sm:space-y-4">
 
       {/* Main Content Area */}
-      <div className="flex-1 flex flex-col lg:flex-row gap-4">
+      <div className="flex-1 flex flex-col lg:flex-row gap-2 sm:gap-4">
         {/* Board Display - Takes center stage */}
         <div className="flex-1 flex justify-center items-start">
           <div className="relative w-full max-w-5xl">
@@ -155,19 +155,19 @@ const BoardSelector: React.FC<BoardSelectorProps> = ({ board, onBoardChange }) =
             <div className="absolute inset-0 bg-gradient-to-r from-green-500/10 to-emerald-500/10 rounded-3xl blur-xl"></div>
             
             {/* Board container with poker table styling */}
-            <div className="relative bg-gradient-to-br from-slate-800/90 to-slate-900/90 backdrop-blur-lg rounded-3xl p-8 border border-slate-600/50 shadow-2xl">
+            <div className="relative bg-gradient-to-br from-slate-800/90 to-slate-900/90 backdrop-blur-lg rounded-3xl p-3 sm:p-6 lg:p-8 border border-slate-600/50 shadow-2xl">
               {/* Table felt background */}
-              <div className="absolute inset-4 bg-gradient-to-br from-green-800/30 to-green-900/30 rounded-2xl"></div>
+              <div className="absolute inset-2 sm:inset-4 bg-gradient-to-br from-green-800/30 to-green-900/30 rounded-2xl"></div>
               
-              <div className="relative space-y-8">
+              <div className="relative space-y-4 sm:space-y-6 lg:space-y-8">
                 {/* Community Cards Display - New Layout */}
-                <div className="flex justify-center items-center gap-8">
+                <div className="flex flex-col sm:flex-row justify-center items-center gap-4 sm:gap-6 lg:gap-8">
                   
                   {/* Flop Section */}
-                  <div className="flex flex-col items-center space-y-3">
-                    <div className="text-slate-300 text-sm font-semibold">FLOP</div>
+                  <div className="flex flex-col items-center space-y-2 sm:space-y-3">
+                    <div className="text-slate-300 text-xs sm:text-sm font-semibold">FLOP</div>
                     <div 
-                      className={`flex gap-2 p-4 rounded-2xl border-2 border-dashed transition-all duration-300 cursor-pointer ${
+                      className={`flex gap-1 sm:gap-2 p-2 sm:p-4 rounded-2xl border-2 border-dashed transition-all duration-300 cursor-pointer ${
                         board.length >= 3 
                           ? 'border-green-500/50 bg-green-500/10' 
                           : 'border-slate-500/50 bg-slate-700/20 hover:border-purple-400/50 hover:bg-purple-500/10'
@@ -183,18 +183,18 @@ const BoardSelector: React.FC<BoardSelectorProps> = ({ board, onBoardChange }) =
                       {board.slice(0, 3).map((card, index) => (
                         <div
                           key={`flop-${index}`}
-                          className="relative bg-white rounded-xl w-16 h-22 sm:w-20 sm:h-28 flex flex-col items-center justify-center cursor-pointer hover:bg-gray-50 transition-all duration-300 shadow-lg hover:shadow-xl border-2 border-gray-200 hover:scale-105 group"
+                          className="relative bg-white rounded-xl w-12 h-16 sm:w-16 sm:h-22 lg:w-20 lg:h-28 flex flex-col items-center justify-center cursor-pointer hover:bg-gray-50 transition-all duration-300 shadow-lg hover:shadow-xl border-2 border-gray-200 hover:scale-105 group"
                           onClick={(e) => {
                             e.stopPropagation();
                             removeCard(index);
                           }}
                           title="Click to reset flop"
                         >
-                          <span className="text-2xl sm:text-3xl font-bold text-slate-800 mb-1">{card.rank}</span>
-                          <span className={`text-3xl sm:text-4xl font-bold ${getSuitColor(card.suit)}`}>
+                          <span className="text-lg sm:text-2xl lg:text-3xl font-bold text-slate-800 mb-1">{card.rank}</span>
+                          <span className={`text-xl sm:text-3xl lg:text-4xl font-bold ${getSuitColor(card.suit)}`}>
                             {getSuitSymbol(card.suit)}
                           </span>
-                          <div className="absolute -top-2 -right-2 bg-red-500 text-white rounded-full w-5 h-5 flex items-center justify-center text-xs opacity-0 group-hover:opacity-100 transition-opacity shadow-lg">
+                          <div className="absolute -top-1 -right-1 sm:-top-2 sm:-right-2 bg-red-500 text-white rounded-full w-4 h-4 sm:w-5 sm:h-5 flex items-center justify-center text-xs opacity-0 group-hover:opacity-100 transition-opacity shadow-lg">
                             ×
                           </div>
                         </div>
@@ -204,18 +204,18 @@ const BoardSelector: React.FC<BoardSelectorProps> = ({ board, onBoardChange }) =
                       {isSelectingFlop && tempFlopCards.map((card, index) => (
                         <div
                           key={`temp-flop-${index}`}
-                          className="relative bg-gradient-to-br from-yellow-200 to-yellow-300 border-2 border-yellow-400 rounded-xl w-16 h-22 sm:w-20 sm:h-28 flex flex-col items-center justify-center cursor-pointer hover:from-yellow-100 hover:to-yellow-200 transition-all duration-300 shadow-lg group"
+                          className="relative bg-gradient-to-br from-yellow-200 to-yellow-300 border-2 border-yellow-400 rounded-xl w-12 h-16 sm:w-16 sm:h-22 lg:w-20 lg:h-28 flex flex-col items-center justify-center cursor-pointer hover:from-yellow-100 hover:to-yellow-200 transition-all duration-300 shadow-lg group"
                           onClick={(e) => {
                             e.stopPropagation();
                             removeTempFlopCard(index);
                           }}
                           title="Temporary flop card - click to remove"
                         >
-                          <span className="text-2xl sm:text-3xl font-bold text-slate-800 mb-1">{card.rank}</span>
-                          <span className={`text-3xl sm:text-4xl font-bold ${getSuitColor(card.suit)}`}>
+                          <span className="text-lg sm:text-2xl lg:text-3xl font-bold text-slate-800 mb-1">{card.rank}</span>
+                          <span className={`text-xl sm:text-3xl lg:text-4xl font-bold ${getSuitColor(card.suit)}`}>
                             {getSuitSymbol(card.suit)}
                           </span>
-                          <div className="absolute -top-2 -right-2 bg-yellow-600 text-white rounded-full w-5 h-5 flex items-center justify-center text-xs group-hover:bg-yellow-700 transition-colors shadow-lg">
+                          <div className="absolute -top-1 -right-1 sm:-top-2 sm:-right-2 bg-yellow-600 text-white rounded-full w-4 h-4 sm:w-5 sm:h-5 flex items-center justify-center text-xs group-hover:bg-yellow-700 transition-colors shadow-lg">
                             ×
                           </div>
                         </div>
@@ -225,19 +225,19 @@ const BoardSelector: React.FC<BoardSelectorProps> = ({ board, onBoardChange }) =
                       {Array.from({ length: 3 - Math.max(board.length, tempFlopCards.length) }, (_, i) => (
                         <div
                           key={`flop-empty-${i}`}
-                          className="bg-gradient-to-br from-slate-700/30 to-slate-800/30 border-2 border-dashed border-slate-500/50 rounded-xl w-16 h-22 sm:w-20 sm:h-28 flex items-center justify-center"
+                          className="bg-gradient-to-br from-slate-700/30 to-slate-800/30 border-2 border-dashed border-slate-500/50 rounded-xl w-12 h-16 sm:w-16 sm:h-22 lg:w-20 lg:h-28 flex items-center justify-center"
                         >
-                          <div className="text-slate-500 text-2xl font-bold">?</div>
+                          <div className="text-slate-500 text-lg sm:text-2xl font-bold">?</div>
                         </div>
                       ))}
                     </div>
                   </div>
 
                   {/* Turn Section */}
-                  <div className="flex flex-col items-center space-y-3">
-                    <div className="text-slate-300 text-sm font-semibold">TURN</div>
+                  <div className="flex flex-col items-center space-y-2 sm:space-y-3">
+                    <div className="text-slate-300 text-xs sm:text-sm font-semibold">TURN</div>
                     <div 
-                      className={`p-4 rounded-2xl border-2 border-dashed transition-all duration-300 cursor-pointer ${
+                      className={`p-2 sm:p-4 rounded-2xl border-2 border-dashed transition-all duration-300 cursor-pointer ${
                         board.length >= 4 
                           ? 'border-green-500/50 bg-green-500/10' 
                           : board.length >= 3
@@ -252,34 +252,34 @@ const BoardSelector: React.FC<BoardSelectorProps> = ({ board, onBoardChange }) =
                     >
                       {board[3] ? (
                         <div
-                          className="relative bg-white rounded-xl w-16 h-22 sm:w-20 sm:h-28 flex flex-col items-center justify-center hover:bg-gray-50 transition-all duration-300 shadow-lg hover:shadow-xl border-2 border-gray-200 hover:scale-105 group"
+                          className="relative bg-white rounded-xl w-12 h-16 sm:w-16 sm:h-22 lg:w-20 lg:h-28 flex flex-col items-center justify-center hover:bg-gray-50 transition-all duration-300 shadow-lg hover:shadow-xl border-2 border-gray-200 hover:scale-105 group"
                           onClick={(e) => {
                             e.stopPropagation();
                             removeCard(3);
                           }}
                           title="Click to remove turn"
                         >
-                          <span className="text-2xl sm:text-3xl font-bold text-slate-800 mb-1">{board[3].rank}</span>
-                          <span className={`text-3xl sm:text-4xl font-bold ${getSuitColor(board[3].suit)}`}>
+                          <span className="text-lg sm:text-2xl lg:text-3xl font-bold text-slate-800 mb-1">{board[3].rank}</span>
+                          <span className={`text-xl sm:text-3xl lg:text-4xl font-bold ${getSuitColor(board[3].suit)}`}>
                             {getSuitSymbol(board[3].suit)}
                           </span>
-                          <div className="absolute -top-2 -right-2 bg-red-500 text-white rounded-full w-5 h-5 flex items-center justify-center text-xs opacity-0 group-hover:opacity-100 transition-opacity shadow-lg">
+                          <div className="absolute -top-1 -right-1 sm:-top-2 sm:-right-2 bg-red-500 text-white rounded-full w-4 h-4 sm:w-5 sm:h-5 flex items-center justify-center text-xs opacity-0 group-hover:opacity-100 transition-opacity shadow-lg">
                             ×
                           </div>
                         </div>
                       ) : (
-                        <div className="bg-gradient-to-br from-slate-700/30 to-slate-800/30 border-2 border-dashed border-slate-500/50 rounded-xl w-16 h-22 sm:w-20 sm:h-28 flex items-center justify-center">
-                          <div className="text-slate-500 text-2xl font-bold">?</div>
+                        <div className="bg-gradient-to-br from-slate-700/30 to-slate-800/30 border-2 border-dashed border-slate-500/50 rounded-xl w-12 h-16 sm:w-16 sm:h-22 lg:w-20 lg:h-28 flex items-center justify-center">
+                          <div className="text-slate-500 text-lg sm:text-2xl font-bold">?</div>
                         </div>
                       )}
                     </div>
                   </div>
 
                   {/* River Section */}
-                  <div className="flex flex-col items-center space-y-3">
-                    <div className="text-slate-300 text-sm font-semibold">RIVER</div>
+                  <div className="flex flex-col items-center space-y-2 sm:space-y-3">
+                    <div className="text-slate-300 text-xs sm:text-sm font-semibold">RIVER</div>
                     <div 
-                      className={`p-4 rounded-2xl border-2 border-dashed transition-all duration-300 cursor-pointer ${
+                      className={`p-2 sm:p-4 rounded-2xl border-2 border-dashed transition-all duration-300 cursor-pointer ${
                         board.length >= 5 
                           ? 'border-green-500/50 bg-green-500/10' 
                           : board.length >= 4
@@ -294,24 +294,24 @@ const BoardSelector: React.FC<BoardSelectorProps> = ({ board, onBoardChange }) =
                     >
                       {board[4] ? (
                         <div
-                          className="relative bg-white rounded-xl w-16 h-22 sm:w-20 sm:h-28 flex flex-col items-center justify-center hover:bg-gray-50 transition-all duration-300 shadow-lg hover:shadow-xl border-2 border-gray-200 hover:scale-105 group"
+                          className="relative bg-white rounded-xl w-12 h-16 sm:w-16 sm:h-22 lg:w-20 lg:h-28 flex flex-col items-center justify-center hover:bg-gray-50 transition-all duration-300 shadow-lg hover:shadow-xl border-2 border-gray-200 hover:scale-105 group"
                           onClick={(e) => {
                             e.stopPropagation();
                             removeCard(4);
                           }}
                           title="Click to remove river"
                         >
-                          <span className="text-2xl sm:text-3xl font-bold text-slate-800 mb-1">{board[4].rank}</span>
-                          <span className={`text-3xl sm:text-4xl font-bold ${getSuitColor(board[4].suit)}`}>
+                          <span className="text-lg sm:text-2xl lg:text-3xl font-bold text-slate-800 mb-1">{board[4].rank}</span>
+                          <span className={`text-xl sm:text-3xl lg:text-4xl font-bold ${getSuitColor(board[4].suit)}`}>
                             {getSuitSymbol(board[4].suit)}
                           </span>
-                          <div className="absolute -top-2 -right-2 bg-red-500 text-white rounded-full w-5 h-5 flex items-center justify-center text-xs opacity-0 group-hover:opacity-100 transition-opacity shadow-lg">
+                          <div className="absolute -top-1 -right-1 sm:-top-2 sm:-right-2 bg-red-500 text-white rounded-full w-4 h-4 sm:w-5 sm:h-5 flex items-center justify-center text-xs opacity-0 group-hover:opacity-100 transition-opacity shadow-lg">
                             ×
                           </div>
                         </div>
                       ) : (
-                        <div className="bg-gradient-to-br from-slate-700/30 to-slate-800/30 border-2 border-dashed border-slate-500/50 rounded-xl w-16 h-22 sm:w-20 sm:h-28 flex items-center justify-center">
-                          <div className="text-slate-500 text-2xl font-bold">?</div>
+                        <div className="bg-gradient-to-br from-slate-700/30 to-slate-800/30 border-2 border-dashed border-slate-500/50 rounded-xl w-12 h-16 sm:w-16 sm:h-22 lg:w-20 lg:h-28 flex items-center justify-center">
+                          <div className="text-slate-500 text-lg sm:text-2xl font-bold">?</div>
                         </div>
                       )}
                     </div>
@@ -325,19 +325,19 @@ const BoardSelector: React.FC<BoardSelectorProps> = ({ board, onBoardChange }) =
         </div>
 
         {/* Side Panel - Controls */}
-        <div className="lg:w-80 space-y-4">
+        <div className="w-full lg:w-80 space-y-2 sm:space-y-4">
           {/* Board Status Card */}
-          <div className="bg-gradient-to-br from-slate-800/80 to-slate-900/80 backdrop-blur-sm rounded-xl p-4 border border-slate-600/50 shadow-lg">
-            <div className="flex items-center justify-between mb-3">
+          <div className="bg-gradient-to-br from-slate-800/80 to-slate-900/80 backdrop-blur-sm rounded-xl p-2 sm:p-4 border border-slate-600/50 shadow-lg">
+            <div className="flex items-center justify-between mb-2 sm:mb-3">
               <div>
-                <h3 className="text-lg font-bold text-slate-100">
+                <h3 className="text-base sm:text-lg font-bold text-slate-100">
                   {board.length === 0 ? 'Pre-flop' : 
                    board.length === 3 ? 'Flop Set' : 
                    board.length === 4 ? 'Turn Set' : 
                    board.length === 5 ? 'Complete Board' : 
                    `${board.length} Cards`}
                 </h3>
-                <p className="text-sm text-slate-300">{board.length + tempFlopCards.length}/5 community cards</p>
+                <p className="text-xs sm:text-sm text-slate-300">{board.length + tempFlopCards.length}/5 community cards</p>
               </div>
               {board.length > 0 && (
                 <button
@@ -364,12 +364,12 @@ const BoardSelector: React.FC<BoardSelectorProps> = ({ board, onBoardChange }) =
           </div>
 
           {/* Quick Presets */}
-          <div className="bg-gradient-to-br from-slate-800/80 to-slate-900/80 backdrop-blur-sm rounded-xl p-4 border border-slate-600/50 shadow-lg">
-            <h4 className="text-sm font-bold text-slate-200 mb-3 flex items-center">
+          <div className="bg-gradient-to-br from-slate-800/80 to-slate-900/80 backdrop-blur-sm rounded-xl p-2 sm:p-4 border border-slate-600/50 shadow-lg">
+            <h4 className="text-xs sm:text-sm font-bold text-slate-200 mb-2 sm:mb-3 flex items-center">
               <span className="w-2 h-2 bg-green-400 rounded-full mr-2"></span>
               Quick Presets
             </h4>
-            <div className="space-y-2">
+            <div className="space-y-1 sm:space-y-2">
               <button
                 onClick={() => {
                   onBoardChange([]);
@@ -421,44 +421,44 @@ const BoardSelector: React.FC<BoardSelectorProps> = ({ board, onBoardChange }) =
       {/* Card Selector Modals */}
       {/* Flop Selector Modal */}
       {shouldShowFlopSelector() && (
-        <div className="fixed inset-0 bg-black/50 backdrop-blur-sm z-50 flex items-center justify-center p-4">
-          <div className="bg-gradient-to-br from-slate-800/95 to-slate-900/95 backdrop-blur-lg rounded-3xl p-6 border border-slate-600/50 shadow-2xl w-full max-w-lg">
-            <div className="flex justify-between items-center mb-6">
-              <h4 className="text-xl font-bold bg-gradient-to-r from-purple-400 to-blue-400 bg-clip-text text-transparent">
+        <div className="fixed inset-0 bg-black/50 backdrop-blur-sm z-50 flex items-center justify-center p-2 sm:p-4">
+          <div className="bg-gradient-to-br from-slate-800/95 to-slate-900/95 backdrop-blur-lg rounded-3xl p-3 sm:p-6 border border-slate-600/50 shadow-2xl w-full max-w-sm sm:max-w-lg max-h-screen overflow-y-auto">
+            <div className="flex justify-between items-center mb-3 sm:mb-6">
+              <h4 className="text-lg sm:text-xl font-bold bg-gradient-to-r from-purple-400 to-blue-400 bg-clip-text text-transparent">
                 Set Flop
               </h4>
               <button
                 onClick={resetSelectors}
-                className="text-slate-400 hover:text-white text-xl p-2 rounded-full hover:bg-slate-700 transition-colors"
+                className="text-slate-400 hover:text-white text-lg sm:text-xl p-1 sm:p-2 rounded-full hover:bg-slate-700 transition-colors"
               >
                 ✕
               </button>
             </div>
 
             {/* Current selection preview - Fixed height */}
-            <div className="mb-6 h-20 flex items-center justify-center">
+            <div className="mb-3 sm:mb-6 h-16 sm:h-20 flex items-center justify-center">
               {tempFlopCards.length > 0 ? (
-                <div className="flex gap-3">
+                <div className="flex gap-2 sm:gap-3">
                   {tempFlopCards.map((card, index) => (
-                    <div key={index} className="bg-white rounded-lg w-16 h-20 flex flex-col items-center justify-center shadow-lg">
-                      <span className="text-base font-bold text-slate-800">{card.rank}</span>
-                      <span className={`text-xl font-bold ${getSuitColor(card.suit)}`}>
+                    <div key={index} className="bg-white rounded-lg w-12 h-16 sm:w-16 sm:h-20 flex flex-col items-center justify-center shadow-lg">
+                      <span className="text-sm sm:text-base font-bold text-slate-800">{card.rank}</span>
+                      <span className={`text-lg sm:text-xl font-bold ${getSuitColor(card.suit)}`}>
                         {getSuitSymbol(card.suit)}
                       </span>
                     </div>
                   ))}
                   {/* Empty slots */}
                   {Array.from({ length: 3 - tempFlopCards.length }, (_, i) => (
-                    <div key={`empty-${i}`} className="border-2 border-dashed border-slate-500 rounded-lg w-16 h-20 flex items-center justify-center">
-                      <span className="text-slate-500 text-xl">?</span>
+                    <div key={`empty-${i}`} className="border-2 border-dashed border-slate-500 rounded-lg w-12 h-16 sm:w-16 sm:h-20 flex items-center justify-center">
+                      <span className="text-slate-500 text-lg sm:text-xl">?</span>
                     </div>
                   ))}
                 </div>
               ) : (
-                <div className="flex gap-3">
+                <div className="flex gap-2 sm:gap-3">
                   {Array.from({ length: 3 }, (_, i) => (
-                    <div key={`placeholder-${i}`} className="border-2 border-dashed border-slate-500 rounded-lg w-16 h-20 flex items-center justify-center">
-                      <span className="text-slate-500 text-xl">?</span>
+                    <div key={`placeholder-${i}`} className="border-2 border-dashed border-slate-500 rounded-lg w-12 h-16 sm:w-16 sm:h-20 flex items-center justify-center">
+                      <span className="text-slate-500 text-lg sm:text-xl">?</span>
                     </div>
                   ))}
                 </div>
@@ -466,9 +466,9 @@ const BoardSelector: React.FC<BoardSelectorProps> = ({ board, onBoardChange }) =
             </div>
 
             {/* Suit selector */}
-            <div className="mb-6">
-              <div className="text-sm font-semibold text-slate-200 mb-3 text-center">Suit:</div>
-              <div className="flex gap-3 justify-center">
+            <div className="mb-3 sm:mb-6">
+              <div className="text-xs sm:text-sm font-semibold text-slate-200 mb-2 sm:mb-3 text-center">Suit:</div>
+              <div className="flex gap-2 sm:gap-3 justify-center">
                 {SUITS.map((suit) => {
                   const isSelected = selectedSuit === suit;
                   const hasDisabledRank = selectedRank && isCardDisabled(selectedRank, suit);
@@ -478,8 +478,8 @@ const BoardSelector: React.FC<BoardSelectorProps> = ({ board, onBoardChange }) =
                       onClick={() => handleSuitSelect(suit)}
                       disabled={hasDisabledRank || false}
                       className={`
-                        w-20 h-20 sm:w-24 sm:h-24 rounded-2xl border-3 transition-all duration-300
-                        flex items-center justify-center text-5xl sm:text-6xl font-bold shadow-2xl
+                        w-16 h-16 sm:w-20 sm:h-20 lg:w-24 lg:h-24 rounded-2xl border-3 transition-all duration-300
+                        flex items-center justify-center text-3xl sm:text-5xl lg:text-6xl font-bold shadow-2xl
                         ${isSelected
                           ? 'bg-gradient-to-br from-purple-500 to-purple-600 border-purple-300 text-white scale-110 shadow-purple-400/50'
                           : hasDisabledRank
@@ -500,8 +500,8 @@ const BoardSelector: React.FC<BoardSelectorProps> = ({ board, onBoardChange }) =
 
             {/* Rank selector */}
             <div className="mb-0">
-              <div className="text-sm font-semibold text-slate-200 mb-3 text-center">Rank:</div>
-              <div className="grid grid-cols-7 gap-2 max-w-md mx-auto">
+              <div className="text-xs sm:text-sm font-semibold text-slate-200 mb-2 sm:mb-3 text-center">Rank:</div>
+              <div className="grid grid-cols-7 gap-1 sm:gap-2 max-w-xs sm:max-w-md mx-auto">
                 {RANKS.map((rank) => {
                   const isSelected = selectedRank === rank;
                   const hasDisabledSuit = selectedSuit && isCardDisabled(rank, selectedSuit);
@@ -511,8 +511,8 @@ const BoardSelector: React.FC<BoardSelectorProps> = ({ board, onBoardChange }) =
                       onClick={() => handleRankSelect(rank)}
                       disabled={hasDisabledSuit || false}
                       className={`
-                        w-10 h-10 rounded-lg border-2 transition-all duration-200
-                        flex items-center justify-center text-lg font-bold shadow-lg
+                        w-8 h-8 sm:w-10 sm:h-10 rounded-lg border-2 transition-all duration-200
+                        flex items-center justify-center text-sm sm:text-lg font-bold shadow-lg
                         ${isSelected
                           ? 'bg-gradient-to-br from-purple-500 to-purple-600 border-purple-300 text-white scale-110 shadow-purple-400/50'
                           : hasDisabledSuit
@@ -535,24 +535,24 @@ const BoardSelector: React.FC<BoardSelectorProps> = ({ board, onBoardChange }) =
 
       {/* Turn/River Selector Modal */}
       {shouldShowTurnRiverSelector() && (
-        <div className="fixed inset-0 bg-black/50 backdrop-blur-sm z-50 flex items-center justify-center p-4">
-          <div className="bg-gradient-to-br from-slate-800/95 to-slate-900/95 backdrop-blur-lg rounded-3xl p-6 border border-slate-600/50 shadow-2xl w-full max-w-lg">
-            <div className="flex justify-between items-center mb-6">
-              <h4 className="text-xl font-bold bg-gradient-to-r from-purple-400 to-blue-400 bg-clip-text text-transparent">
+        <div className="fixed inset-0 bg-black/50 backdrop-blur-sm z-50 flex items-center justify-center p-2 sm:p-4">
+          <div className="bg-gradient-to-br from-slate-800/95 to-slate-900/95 backdrop-blur-lg rounded-3xl p-3 sm:p-6 border border-slate-600/50 shadow-2xl w-full max-w-sm sm:max-w-lg max-h-screen overflow-y-auto">
+            <div className="flex justify-between items-center mb-3 sm:mb-6">
+              <h4 className="text-lg sm:text-xl font-bold bg-gradient-to-r from-purple-400 to-blue-400 bg-clip-text text-transparent">
                 {isSelectingCard === 3 ? 'Turn' : 'River'}
               </h4>
               <button
                 onClick={resetSelectors}
-                className="text-slate-400 hover:text-white text-xl p-2 rounded-full hover:bg-slate-700 transition-colors"
+                className="text-slate-400 hover:text-white text-lg sm:text-xl p-1 sm:p-2 rounded-full hover:bg-slate-700 transition-colors"
               >
                 ✕
               </button>
             </div>
 
             {/* Suit selector */}
-            <div className="mb-6">
-              <div className="text-sm font-semibold text-slate-200 mb-3 text-center">Suit:</div>
-              <div className="flex gap-3 justify-center">
+            <div className="mb-3 sm:mb-6">
+              <div className="text-xs sm:text-sm font-semibold text-slate-200 mb-2 sm:mb-3 text-center">Suit:</div>
+              <div className="flex gap-2 sm:gap-3 justify-center">
                 {SUITS.map((suit) => {
                   const isSelected = selectedSuit === suit;
                   const hasDisabledRank = selectedRank && isCardDisabled(selectedRank, suit);
@@ -562,8 +562,8 @@ const BoardSelector: React.FC<BoardSelectorProps> = ({ board, onBoardChange }) =
                       onClick={() => handleSuitSelect(suit)}
                       disabled={hasDisabledRank || false}
                       className={`
-                        w-16 h-16 rounded-xl border-2 transition-all duration-200
-                        flex items-center justify-center text-3xl font-bold shadow-lg
+                        w-12 h-12 sm:w-16 sm:h-16 rounded-xl border-2 transition-all duration-200
+                        flex items-center justify-center text-2xl sm:text-3xl font-bold shadow-lg
                         ${isSelected
                           ? 'bg-gradient-to-br from-purple-500 to-purple-600 border-purple-300 text-white scale-110 shadow-purple-400/50'
                           : hasDisabledRank
@@ -584,8 +584,8 @@ const BoardSelector: React.FC<BoardSelectorProps> = ({ board, onBoardChange }) =
 
             {/* Rank selector */}
             <div className="mb-0">
-              <div className="text-sm font-semibold text-slate-200 mb-3 text-center">Rank:</div>
-              <div className="grid grid-cols-7 gap-2 max-w-md mx-auto">
+              <div className="text-xs sm:text-sm font-semibold text-slate-200 mb-2 sm:mb-3 text-center">Rank:</div>
+              <div className="grid grid-cols-7 gap-1 sm:gap-2 max-w-xs sm:max-w-md mx-auto">
                 {RANKS.map((rank) => {
                   const isSelected = selectedRank === rank;
                   const hasDisabledSuit = selectedSuit && isCardDisabled(rank, selectedSuit);
@@ -595,8 +595,8 @@ const BoardSelector: React.FC<BoardSelectorProps> = ({ board, onBoardChange }) =
                       onClick={() => handleRankSelect(rank)}
                       disabled={hasDisabledSuit || false}
                       className={`
-                        w-10 h-10 rounded-lg border-2 transition-all duration-200
-                        flex items-center justify-center text-lg font-bold shadow-lg
+                        w-8 h-8 sm:w-10 sm:h-10 rounded-lg border-2 transition-all duration-200
+                        flex items-center justify-center text-sm sm:text-lg font-bold shadow-lg
                         ${isSelected
                           ? 'bg-gradient-to-br from-purple-500 to-purple-600 border-purple-300 text-white scale-110 shadow-purple-400/50'
                           : hasDisabledSuit

@@ -141,6 +141,44 @@ const HandRangeSelector: React.FC<HandRangeSelectorProps> = ({
 
   return (
     <div className="h-full flex flex-col">
+      {/* Mobile Layout: Player Info at top */}
+      <div className="lg:hidden mb-4">
+        {/* Player Info Card - Mobile Top */}
+        {player && (
+          <div className="bg-gradient-to-br from-slate-800/80 to-slate-900/80 backdrop-blur-sm rounded-xl p-3 border border-slate-600/50 shadow-lg">
+            <div className="flex items-center justify-between mb-3">
+              <h3 className="text-lg font-bold text-slate-100 flex items-center">
+                {player.isHero && <span className="mr-2">👑</span>}
+                {player.name} • <span className="text-sm text-slate-300 font-normal">{player.position}</span>
+              </h3>
+            </div>
+            
+            {/* Range Stats */}
+            <div className="grid grid-cols-2 gap-3 text-center">
+              <div className="bg-slate-700/50 rounded-lg p-2">
+                <div className="text-lg font-semibold text-blue-400">{rangeStats.combinations}</div>
+                <div className="text-xs text-slate-400">Combinations</div>
+              </div>
+              <div className="bg-slate-700/50 rounded-lg p-2">
+                <div className="text-lg font-semibold text-green-400">{rangeStats.count}</div>
+                <div className="text-xs text-slate-400">Hand Types</div>
+              </div>
+            </div>
+            
+            {rangeStats.count > 0 && (
+              <div className="mt-3 p-2 bg-slate-700/30 rounded-lg">
+                <div className="text-xs text-slate-300 text-center">
+                  <span className="font-semibold text-purple-400">{getRangeLabel(rangeStats.percentage)}</span>
+                  <div className="text-slate-400 mt-1">
+                    {rangeStats.strongestHand} ↔ {rangeStats.weakestHand}
+                  </div>
+                </div>
+              </div>
+            )}
+          </div>
+        )}
+      </div>
+
       {/* Main Content Area - Swapped layout: Grid left, Controls right */}
       <div className="flex-1 flex flex-col lg:flex-row gap-2">
         {/* Left Panel - Hand Matrix Grid */}
@@ -150,10 +188,10 @@ const HandRangeSelector: React.FC<HandRangeSelectorProps> = ({
             <div className="absolute inset-0 bg-gradient-to-r from-purple-500/10 to-blue-500/10 rounded-3xl blur-xl"></div>
             
             {/* Matrix container */}
-            <div className="relative bg-gradient-to-br from-slate-800/90 to-slate-900/90 backdrop-blur-lg rounded-3xl p-4 border border-slate-600/50 shadow-2xl">
+            <div className="relative bg-gradient-to-br from-slate-800/90 to-slate-900/90 backdrop-blur-lg rounded-3xl p-2 sm:p-4 border border-slate-600/50 shadow-2xl">
               <div className="w-full aspect-square">
                 <div 
-                  className="gap-1 w-full h-full"
+                  className="gap-0.5 sm:gap-1 w-full h-full"
                   style={{
                     display: 'grid',
                     gridTemplateColumns: 'repeat(13, minmax(0, 1fr))',
@@ -171,7 +209,7 @@ const HandRangeSelector: React.FC<HandRangeSelectorProps> = ({
                       onMouseEnter={() => handleMouseEnter(hand)}
                       onMouseUp={handleMouseUp}
                       className={`
-                        w-full h-full text-xs sm:text-sm font-bold rounded-lg border-2 transition-all duration-200
+                        w-full h-full text-xs sm:text-sm font-bold rounded-md sm:rounded-lg border-2 transition-all duration-200
                         flex items-center justify-center cursor-pointer select-none shadow-sm
                         ${isHandSelected(hand)
                           ? 'bg-gradient-to-br from-purple-500 to-purple-600 text-white border-purple-300 shadow-lg shadow-purple-500/30'
@@ -195,8 +233,8 @@ const HandRangeSelector: React.FC<HandRangeSelectorProps> = ({
           </div>
         </div>
 
-        {/* Right Panel - Controls */}
-        <div className="lg:w-72 space-y-2">
+        {/* Right Panel - Controls (Desktop) */}
+        <div className="hidden lg:block lg:w-72 space-y-2">
           {/* Player Info Card */}
           {player && (
             <div className="bg-gradient-to-br from-slate-800/80 to-slate-900/80 backdrop-blur-sm rounded-xl p-3 border border-slate-600/50 shadow-lg">
@@ -327,6 +365,102 @@ const HandRangeSelector: React.FC<HandRangeSelectorProps> = ({
               </button>
             </div>
           </div>
+        </div>
+      </div>
+
+      {/* Mobile Layout: Controls at bottom */}
+      <div className="lg:hidden space-y-2 mt-4">
+        {/* Range Size Control - Mobile */}
+        <div className="bg-gradient-to-br from-slate-800/80 to-slate-900/80 backdrop-blur-sm rounded-xl p-3 border border-slate-600/50 shadow-lg">
+          <h4 className="text-sm font-bold text-slate-200 mb-3 flex items-center">
+            <span className="w-2 h-2 bg-purple-400 rounded-full mr-2"></span>
+            Range Size Control
+          </h4>
+          
+          <div className="space-y-3">
+            {/* Enhanced slider */}
+            <div className="relative">
+              <input
+                type="range"
+                min="0"
+                max="100"
+                step="0.1"
+                value={sliderValue}
+                onChange={(e) => handlePercentageInputChange(e.target.value)}
+                className="w-full h-3 bg-slate-700 rounded-lg appearance-none cursor-pointer slider"
+                style={{
+                  background: `linear-gradient(to right, #8b5cf6 0%, #8b5cf6 ${sliderValue}%, #374151 ${sliderValue}%, #374151 100%)`
+                }}
+              />
+              <div className="flex justify-between text-xs text-slate-400 mt-2">
+                <span>Tight (0%)</span>
+                <span>Balanced (50%)</span>
+                <span>Loose (100%)</span>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        {/* Quick Presets - Mobile */}
+        <div className="bg-gradient-to-br from-slate-800/80 to-slate-900/80 backdrop-blur-sm rounded-xl p-3 border border-slate-600/50 shadow-lg">
+          <h4 className="text-sm font-bold text-slate-200 mb-3 flex items-center">
+            <span className="w-2 h-2 bg-green-400 rounded-full mr-2"></span>
+            Quick Presets
+          </h4>
+          <div className="grid grid-cols-2 gap-2">
+            <button 
+              onClick={() => setPercentageRange(PRESET_PERCENTAGES.PREMIUM)} 
+              className="btn-preset-premium btn-xs"
+            >
+              Premium
+              <div className="text-xs opacity-80">{PRESET_PERCENTAGES.PREMIUM}%</div>
+            </button>
+            <button 
+              onClick={() => setPercentageRange(PRESET_PERCENTAGES.ULTRA_TIGHT)} 
+              className="btn-preset-ultra-tight btn-xs"
+            >
+              Ultra-tight
+              <div className="text-xs opacity-80">{PRESET_PERCENTAGES.ULTRA_TIGHT}%</div>
+            </button>
+            <button 
+              onClick={() => setPercentageRange(PRESET_PERCENTAGES.TIGHT)} 
+              className="btn-preset-tight btn-xs"
+            >
+              Tight
+              <div className="text-xs opacity-80">{PRESET_PERCENTAGES.TIGHT}%</div>
+            </button>
+            <button 
+              onClick={() => setPercentageRange(PRESET_PERCENTAGES.MEDIUM)} 
+              className="btn-preset-medium btn-xs"
+            >
+              Medium
+              <div className="text-xs opacity-80">{PRESET_PERCENTAGES.MEDIUM}%</div>
+            </button>
+            <button 
+              onClick={() => setPercentageRange(PRESET_PERCENTAGES.LOOSE)} 
+              className="btn-preset-loose btn-xs"
+            >
+              Loose
+              <div className="text-xs opacity-80">{PRESET_PERCENTAGES.LOOSE}%</div>
+            </button>
+            <button 
+              onClick={() => setPercentageRange(100)}
+              className="btn-preset-any-two btn-xs"
+            >
+              Any Two
+              <div className="text-xs opacity-80">100%</div>
+            </button>
+          </div>
+        </div>
+
+        {/* Clear button - Mobile */}
+        <div className="bg-gradient-to-br from-slate-800/60 to-slate-900/60 backdrop-blur-sm rounded-xl p-3 border border-slate-600/30">
+          <button 
+            onClick={clearRange}
+            className="w-full btn-danger btn-sm"
+          >
+            Clear All Hands
+          </button>
         </div>
       </div>
     </div>

@@ -191,27 +191,33 @@ const TableSelector: React.FC<TableSelectorProps> = ({
   };
 
   return (
-    <div className="h-full flex flex-col space-y-4 overflow-hidden">
+    <div className="h-full flex flex-col space-y-2 sm:space-y-4 overflow-hidden">
       {/* Header */}
       <div className="text-center">
-        <h2 className="text-2xl font-bold bg-gradient-to-r from-purple-400 to-blue-400 bg-clip-text text-transparent mb-2">
+        <h2 className="text-lg sm:text-2xl font-bold bg-gradient-to-r from-purple-400 to-blue-400 bg-clip-text text-transparent mb-1 sm:mb-2">
           Select Players
         </h2>
       </div>
 
       {/* Main Content Area */}
-      <div className="flex-1 flex flex-col lg:flex-row gap-4 min-h-0">
+      <div className="flex-1 flex flex-col lg:flex-row gap-2 sm:gap-4 min-h-0">
         {/* Left Section - Table and Button */}
-        <div className="flex-1 flex flex-col items-center space-y-4">
+        <div className="flex-1 flex flex-col items-center space-y-2 sm:space-y-4">
           {/* Table Section */}
-          <div className="flex justify-center items-center h-[500px] w-full">
-            <div className="relative w-[650px] h-[500px] flex-shrink-0">
+          <div className="flex justify-center items-center h-[280px] sm:h-[400px] lg:h-[500px] w-full">
+            <div className="relative w-full max-w-[350px] sm:max-w-[500px] lg:max-w-[650px] h-full flex-shrink-0">
               {/* Outer glow effect */}
               <div className="absolute inset-0 bg-gradient-to-r from-purple-500/20 to-blue-500/20 rounded-3xl blur-xl"></div>
               
               {/* Table container with enhanced styling */}
-              <div className="relative bg-gradient-to-br from-slate-800/90 to-slate-900/90 backdrop-blur-lg rounded-3xl p-6 border border-slate-600/50 shadow-2xl w-full h-full flex items-center justify-center">
-                <svg width="600" height="440" viewBox="0 0 600 440" className="overflow-visible drop-shadow-lg">
+              <div className="relative bg-gradient-to-br from-slate-800/90 to-slate-900/90 backdrop-blur-lg rounded-3xl p-2 sm:p-4 lg:p-6 border border-slate-600/50 shadow-2xl w-full h-full flex items-center justify-center">
+                <svg 
+                  width="100%" 
+                  height="100%" 
+                  viewBox="0 0 600 440" 
+                  className="overflow-visible drop-shadow-lg max-w-full max-h-full"
+                  preserveAspectRatio="xMidYMid meet"
+                >
                 {/* Table shadow */}
                 <ellipse 
                   cx="300" 
@@ -347,7 +353,7 @@ const TableSelector: React.FC<TableSelectorProps> = ({
                       <circle
                         cx={pos.x}
                         cy={pos.y}
-                        r="35"
+                        r="30"
                         fill={player ? 
                           (player.isHero ? 'rgb(147 51 234)' : 'rgb(59 130 246)') : 
                           'rgba(71, 85, 105, 0.8)'
@@ -382,26 +388,26 @@ const TableSelector: React.FC<TableSelectorProps> = ({
                             y={pos.y - 3}
                             textAnchor="middle"
                             className="fill-white text-sm font-bold pointer-events-none drop-shadow-sm"
-                            style={{ fontSize: '12px' }}
+                            style={{ fontSize: '10px' }}
                           >
                             {player.name}
                           </text>
                           
                           {/* Range count with background */}
                           <rect
-                            x={pos.x - 15}
+                            x={pos.x - 12}
                             y={pos.y + 5}
-                            width="30"
-                            height="16"
-                            rx="8"
+                            width="24"
+                            height="14"
+                            rx="7"
                             fill="rgba(0,0,0,0.5)"
                           />
                           <text
                             x={pos.x}
-                            y={pos.y + 15}
+                            y={pos.y + 14}
                             textAnchor="middle"
                             className="fill-white text-xs font-semibold pointer-events-none"
-                            style={{ fontSize: '10px' }}
+                            style={{ fontSize: '8px' }}
                           >
                             {player.range.length}
                           </text>
@@ -412,7 +418,7 @@ const TableSelector: React.FC<TableSelectorProps> = ({
                           y={pos.y + 5}
                           textAnchor="middle"
                           className="fill-slate-300 pointer-events-none"
-                          style={{ fontSize: '24px' }}
+                          style={{ fontSize: '18px' }}
                         >
                           +
                         </text>
@@ -420,21 +426,21 @@ const TableSelector: React.FC<TableSelectorProps> = ({
                       
                       {/* Position label with background */}
                       <rect
-                        x={pos.x - 20}
-                        y={pos.y + 45}
-                        width="40"
-                        height="18"
-                        rx="9"
+                        x={pos.x - 16}
+                        y={pos.y + 35}
+                        width="32"
+                        height="14"
+                        rx="7"
                         fill="rgba(0,0,0,0.7)"
                         stroke="rgba(255,255,255,0.2)"
                         strokeWidth="1"
                       />
                       <text
                         x={pos.x}
-                        y={pos.y + 56}
+                        y={pos.y + 44}
                         textAnchor="middle"
                         className="fill-slate-200 text-xs font-bold pointer-events-none"
-                        style={{ fontSize: '11px' }}
+                        style={{ fontSize: '8px' }}
                       >
                         {name}
                       </text>
@@ -466,14 +472,14 @@ const TableSelector: React.FC<TableSelectorProps> = ({
         </div>
 
         {/* Side Panel - Player info and controls */}
-        <div className="lg:w-80 space-y-4 flex-shrink-0 flex flex-col">
+        <div className="w-full lg:w-80 space-y-2 sm:space-y-4 flex-shrink-0 flex flex-col">
           {/* Game Format Selector */}
-          <div className="bg-gradient-to-br from-slate-800/80 to-slate-900/80 backdrop-blur-sm rounded-xl p-4 border border-slate-600/50 shadow-lg">
-            <h4 className="text-sm font-bold text-slate-200 mb-3 flex items-center">
+          <div className="bg-gradient-to-br from-slate-800/80 to-slate-900/80 backdrop-blur-sm rounded-xl p-2 sm:p-4 border border-slate-600/50 shadow-lg">
+            <h4 className="text-xs sm:text-sm font-bold text-slate-200 mb-2 sm:mb-3 flex items-center">
               <span className="w-2 h-2 bg-purple-400 rounded-full mr-2"></span>
               Game Format
             </h4>
-            <div className="space-y-2">
+            <div className="space-y-1 sm:space-y-2">
               <button
                 onClick={() => changeGameFormat('6-max')}
                 className={`w-full flex items-center justify-between ${
@@ -511,13 +517,13 @@ const TableSelector: React.FC<TableSelectorProps> = ({
           </div>
 
           {/* Player Summary Card */}
-          <div className="bg-gradient-to-br from-slate-800/80 to-slate-900/80 backdrop-blur-sm rounded-xl p-4 border border-slate-600/50 shadow-lg">
-            <div className="flex items-center justify-between mb-3">
+          <div className="bg-gradient-to-br from-slate-800/80 to-slate-900/80 backdrop-blur-sm rounded-xl p-2 sm:p-4 border border-slate-600/50 shadow-lg">
+            <div className="flex items-center justify-between mb-2 sm:mb-3">
               <div>
-                <h3 className="text-lg font-bold text-slate-100 h-7 flex items-center">
+                <h3 className="text-base sm:text-lg font-bold text-slate-100 h-6 sm:h-7 flex items-center">
                   {getActivePlayerCount()} Player{getActivePlayerCount() !== 1 ? 's' : ''}
                 </h3>
-                <p className="text-sm text-slate-300 h-5 flex items-center">
+                <p className="text-xs sm:text-sm text-slate-300 h-4 sm:h-5 flex items-center">
                   {getHeroPlayer() ? (
                     <>Hero: <span className="text-purple-400 font-semibold">{getHeroPlayer()!.position}</span></>
                   ) : (
@@ -544,18 +550,18 @@ const TableSelector: React.FC<TableSelectorProps> = ({
                 style={{ width: `${(getActivePlayerCount() / getAvailableSeats(gameFormat).length) * 100}%` }}
               ></div>
             </div>
-            <p className="text-xs text-slate-400 mt-1 h-4 flex items-center">
+            <p className="text-xs text-slate-400 mt-1 h-3 sm:h-4 flex items-center">
               {getActivePlayerCount()}/{getAvailableSeats(gameFormat).length} seats filled
             </p>
           </div>
 
           {/* Active Players List - Always visible to prevent layout shift */}
-          <div className="bg-gradient-to-br from-slate-800/80 to-slate-900/80 backdrop-blur-sm rounded-xl p-4 border border-slate-600/50 shadow-lg flex-1 flex flex-col">
-            <h4 className="text-sm font-bold text-slate-200 mb-3 flex items-center">
+          <div className="bg-gradient-to-br from-slate-800/80 to-slate-900/80 backdrop-blur-sm rounded-xl p-2 sm:p-4 border border-slate-600/50 shadow-lg flex-1 flex flex-col">
+            <h4 className="text-xs sm:text-sm font-bold text-slate-200 mb-2 sm:mb-3 flex items-center">
               <span className="w-2 h-2 bg-green-400 rounded-full mr-2"></span>
               Active Players
             </h4>
-            <div className="space-y-2 min-h-[120px] flex-1 overflow-y-auto">
+            <div className="space-y-1 sm:space-y-2 min-h-[80px] sm:min-h-[120px] flex-1 overflow-y-auto">
               {players.length > 0 ? (
                 players
                   .sort((a, b) => a.seatNumber - b.seatNumber)
@@ -563,7 +569,7 @@ const TableSelector: React.FC<TableSelectorProps> = ({
                     <button
                       key={player.id}
                       onClick={() => onPlayerSelect(player)}
-                      className={`w-full p-3 rounded-lg border-2 transition-all duration-200 text-left ${
+                      className={`w-full p-2 sm:p-3 rounded-lg border-2 transition-all duration-200 text-left ${
                         selectedPlayer?.id === player.id
                           ? 'border-yellow-400 bg-yellow-400/20 text-yellow-200 shadow-lg shadow-yellow-400/20'
                           : player.isHero
@@ -573,14 +579,14 @@ const TableSelector: React.FC<TableSelectorProps> = ({
                     >
                       <div className="flex items-center justify-between">
                         <div>
-                          <div className="font-bold text-sm flex items-center">
+                          <div className="font-bold text-xs sm:text-sm flex items-center">
                             {player.isHero && <span className="mr-1">👑</span>}
                             {player.name}
                           </div>
                           <div className="text-xs opacity-80">{player.position}</div>
                         </div>
                         <div className="text-right">
-                          <div className="text-sm font-semibold">
+                          <div className="text-xs sm:text-sm font-semibold">
                             {player.range.length}
                           </div>
                           <div className="text-xs opacity-60">hands</div>
@@ -589,10 +595,10 @@ const TableSelector: React.FC<TableSelectorProps> = ({
                     </button>
                   ))
               ) : (
-                <div className="flex items-center justify-center h-[120px] text-slate-400">
+                <div className="flex items-center justify-center h-[80px] sm:h-[120px] text-slate-400">
                   <div className="text-center">
-                    <div className="text-2xl mb-2">🪑</div>
-                    <div className="text-sm">Click seats on the table to add players</div>
+                    <div className="text-xl sm:text-2xl mb-1 sm:mb-2">🪑</div>
+                    <div className="text-xs sm:text-sm">Click seats on the table to add players</div>
                   </div>
                 </div>
               )}
