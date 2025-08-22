@@ -134,9 +134,9 @@ const HandRangeSelector: React.FC<HandRangeSelectorProps> = ({
     toggleHand(hand);
   };
 
-  const handleMouseEnter = (hand: string) => {
-    // Prevent mouse events on touch devices to avoid double handling
-    if (isTouchDevice || !isDragging) return;
+  // Shared logic for drag selection (used by both mouse and touch)
+  const handleDragSelection = (hand: string) => {
+    if (!isDragging) return;
     
     const isSelected = isHandSelected(hand);
     
@@ -150,6 +150,12 @@ const HandRangeSelector: React.FC<HandRangeSelectorProps> = ({
       const newRange = selectedRange.filter(h => h !== hand);
       onRangeChange(newRange);
     }
+  };
+
+  const handleMouseEnter = (hand: string) => {
+    // Prevent mouse events on touch devices to avoid double handling
+    if (isTouchDevice) return;
+    handleDragSelection(hand);
   };
 
   const handleMouseUp = () => {
@@ -181,7 +187,7 @@ const HandRangeSelector: React.FC<HandRangeSelectorProps> = ({
     const element = document.elementFromPoint(touch.clientX, touch.clientY) as HTMLElement;
     
     if (element && element.dataset && element.dataset.hand) {
-      handleMouseEnter(element.dataset.hand);
+      handleDragSelection(element.dataset.hand);
     }
   };
 
